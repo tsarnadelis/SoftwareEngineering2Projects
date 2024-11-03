@@ -1,0 +1,431 @@
+openapi: 3.0.0
+info:
+  title: Curbsprings API
+  description: "API for managing parking spots, reservations, users, and payments."
+  contact:
+    name: Curbspring Team
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+servers:
+- url: https://api.example.com
+  description: Testing server
+tags:
+- name: Spot
+  description: Spot endpoints
+- name: LicensePlate
+  description: LicensePlate endpoints
+- name: Reservation
+  description: Reservation endpoints
+- name: SpotOwner
+  description: SpotOwner endpoints
+- name: Payment
+  description: Payment endpoints
+paths:
+  /spot:
+    get:
+      tags:
+      - Spot
+      summary: Retrieve all available parking spots
+      description: "FR1: The user must be able to view all available parking spots"
+      operationId: getSpots
+      responses:
+        "200":
+          description: A list of parking spots
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ParkingSpot'
+                x-content-type: application/json
+      x-swagger-router-controller: Spot
+    post:
+      tags:
+      - Spot
+      summary: Add a new parking spot
+      description: "FR12: The spot owner must be able to add a new parking spot to\
+        \ the system"
+      operationId: createSpot
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ParkingSpot'
+        required: true
+      responses:
+        "201":
+          description: Parking spot added successfully
+      x-swagger-router-controller: Spot
+  /spot/{id}:
+    put:
+      tags:
+      - Spot
+      summary: Modify the information of a specific parking spot
+      description: "FR13: The spot owner must be able to modify the information of\
+        \ their spots"
+      operationId: modifySpot
+      parameters:
+      - name: id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      - name: address
+        in: query
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: type
+        in: query
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: charger
+        in: query
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: boolean
+      requestBody:
+        description: Parking spot object to update
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ParkingSpot'
+        required: true
+      responses:
+        "200":
+          description: Parking spot updated successfully
+      x-swagger-router-controller: Spot
+    delete:
+      tags:
+      - Spot
+      summary: Remove a specific parking spot from the system
+      description: "FR14: The spot owner must be able to remove a spot from the system"
+      operationId: removeSpot
+      parameters:
+      - name: id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "204":
+          description: Parking spot removed successfully
+      x-swagger-router-controller: Spot
+  /licensePlate:
+    put:
+      tags:
+      - LicensePlate
+      summary: Modify vehicle's license plate
+      description: "FR5: The user must be able to modify their vehicle's license plate\
+        \ in the system"
+      operationId: modifyPlate
+      requestBody:
+        description: License plate object to update
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LicensePlate'
+        required: true
+      responses:
+        "200":
+          description: License plate updated successfully
+      x-swagger-router-controller: LicensePlate
+    post:
+      tags:
+      - LicensePlate
+      summary: Register vehicle's license plate
+      description: "FR4: The user must be able to register their vehicle's license\
+        \ plate in the system"
+      operationId: registerPlate
+      requestBody:
+        description: License plate to register
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LicensePlate'
+        required: true
+      responses:
+        "201":
+          description: License plate registered successfully
+      x-swagger-router-controller: LicensePlate
+  /reservation:
+    post:
+      tags:
+      - Reservation
+      summary: Create a new reservation
+      description: "FR6: The user must be able to reserve a parking spot"
+      operationId: makeReservation
+      requestBody:
+        description: Reservation object to create
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Reservation'
+        required: true
+      responses:
+        "201":
+          description: Reservation created successfully
+      x-swagger-router-controller: Reservation
+  /reservation/{id}:
+    put:
+      tags:
+      - Reservation
+      summary: Modify a specific reservation
+      description: "FR7: The user must be able to manage their reservation in the\
+        \ system"
+      operationId: modifyReservation
+      parameters:
+      - name: id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      - name: spotId
+        in: query
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: integer
+      - name: userId
+        in: query
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: integer
+      - name: startTime
+        in: query
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+          format: date-time
+      - name: duration
+        in: query
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+          format: date-time
+      - name: date
+        in: query
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+          format: date
+      requestBody:
+        description: Reservation object to update
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Reservation'
+        required: true
+      responses:
+        "200":
+          description: Reservation updated successfully
+      x-swagger-router-controller: Reservation
+    delete:
+      tags:
+      - Reservation
+      summary: Cancel a specific reservation
+      description: "FR7: The user must be able to manage their reservation in the\
+        \ system"
+      operationId: deleteReservation
+      parameters:
+      - name: id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "204":
+          description: Reservation cancelled successfully
+      x-swagger-router-controller: Reservation
+  /spotowner:
+    post:
+      tags:
+      - SpotOwner
+      summary: Add a new spot owner
+      description: "FR15: The system administrator must be able to add a spot owner\
+        \ to the system"
+      operationId: addSpotOwner
+      requestBody:
+        description: Spot owner object to add
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SpotOwner'
+        required: true
+      responses:
+        "201":
+          description: Spot owner added successfully
+      x-swagger-router-controller: SpotOwner
+  /spot/search:
+    get:
+      tags:
+      - Spot
+      summary: Search for available parking spots
+      description: "FR2: The user must be able to search for available parking spots\
+        \ in the system"
+      operationId: searchSpot
+      parameters:
+      - name: address
+        in: query
+        required: true
+        allowEmptyValue: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: type
+        in: query
+        required: true
+        allowEmptyValue: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: charger
+        in: query
+        required: true
+        allowEmptyValue: true
+        style: form
+        explode: true
+        schema:
+          type: boolean
+      responses:
+        "200":
+          description: A list of available parking spots matching the search criteria
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ParkingSpot'
+                x-content-type: application/json
+      x-swagger-router-controller: Spot
+  /payment:
+    post:
+      tags:
+      - Payment
+      summary: Process a payment through the payment gateway
+      description: "FR8: The user must be able to make a payment through the payment\
+        \ gateway"
+      operationId: makePayment
+      requestBody:
+        description: Payment object to process
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Payment'
+        required: true
+      responses:
+        "201":
+          description: Payment processed successfully
+      x-swagger-router-controller: Payment
+components:
+  schemas:
+    ParkingSpot:
+      type: object
+      properties:
+        id:
+          type: integer
+        address:
+          type: string
+        type:
+          type: string
+        chargerAvailability:
+          type: boolean
+      example:
+        address: address
+        id: 0
+        type: type
+        chargerAvailability: true
+    LicensePlate:
+      type: object
+      properties:
+        userId:
+          type: integer
+        licensePlate:
+          type: string
+    Reservation:
+      type: object
+      properties:
+        id:
+          type: integer
+        spotId:
+          type: integer
+        userId:
+          type: integer
+        startTime:
+          type: string
+          format: date-time
+        duration:
+          type: string
+          format: date-time
+        date:
+          type: string
+          format: date
+    SpotOwner:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        idNumber:
+          type: string
+        phone:
+          type: number
+        spots:
+          type: array
+          items:
+            $ref: '#/components/schemas/ParkingSpot'
+    Payment:
+      type: object
+      properties:
+        id:
+          type: integer
+        user:
+          $ref: '#/components/schemas/User'
+        amount:
+          type: integer
+          format: float
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        licensePlate:
+          $ref: '#/components/schemas/LicensePlate'
+        reservation:
+          type: array
+          items:
+            $ref: '#/components/schemas/Reservation'
