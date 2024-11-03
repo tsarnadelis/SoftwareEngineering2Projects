@@ -15,7 +15,6 @@ This repository contains materials related to assignments of the Software Engine
 >Course professor: [Andreas Symeonidis](https://people.auth.gr/symeonid/).
 
 > Made with valuable help from the [ISSEL](https://issel.ee.auth.gr/) team.
-> Course TAs: Thomas Karanikiotis, ....
 
 ## Cyclopt platform
 
