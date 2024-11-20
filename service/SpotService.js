@@ -86,7 +86,7 @@ exports.removeSpot = function(id) {
  * returns List
  **/
 exports.searchSpot = function(address,type,charger) {
-  return new Promise(function(resolve, reject) {
+  return new Promise(function(resolve, /*reject*/) { // remove unused reject
     var examples = {};
     examples['application/json'] = [ {
   "address" : "address",
