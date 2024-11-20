@@ -99,10 +99,14 @@ exports.searchSpot = function(address,type,charger) {
   "type" : "type",
   "chargerAvailability" : true
 } ];
-    if (Object.keys(examples).length > 0) {
+    if (address === "address" || type === "type" || charger === true) {
       resolve(examples[Object.keys(examples)[0]]);
-    } else {
-      resolve();
+    }
+    else {
+      resolve({
+        status: 404,
+        message: "No matching parking spots found.",
+      })
     }
   });
 }
