@@ -141,7 +141,7 @@ test("POST /spot without required address field returns 404", async (t) => {
   
 });
 
-test("POST /spot without required type field returns 404", async (t) => {
+test("POST /spot without required id field returns 404", async (t) => {
   const EmptyField_2 = {
     address: "Dilou 48", 
     id: "", 
@@ -158,13 +158,47 @@ test("POST /spot without required type field returns 404", async (t) => {
   
 });
 
-//Αποτυχία λόγω μη συμπληρωμένων πεδίων στο body του spot
-test("POST /spot without required fields returns 404", async (t) => {
-    const error = await t.throwsAsync(() => t.context.got.post('spot8', {
-        json: { address: "", id: "", type: "", chargerAvailability: ""}
-    }));
-    t.is(error.response.statusCode, 404); // Ελέγχουμε ότι ο κώδικας επστροφής είναι 404
+test("POST /spot without required type field returns 404", async (t) => {
+  const EmptyField_3 = {
+    address: "Mynokou 76", 
+    id: 489, 
+    type: "", 
+    chargerAvailability: false
+  }
+    
+    const error = await t.throwsAsync(
+    t.context.got.post('spot7', { json: EmptyField_3 })
+  );
+  
+  // Ελέγχουμε ότι η απόκριση έχει το σωστό κωδικό σφάλματος (404), ο οποίος δηλώνει ότι το αίτημα δεν είναι έγκυρο.
+  t.is(error.response.statusCode, 404);
+  
 });
+
+test("POST /spot without required chargerAvailability field returns 404", async (t) => {
+  const EmptyField_4 = {
+    address: "Tinou 90", 
+    id: 347, 
+    type: "Garage", 
+    chargerAvailability: ""
+  }
+    
+    const error = await t.throwsAsync(
+    t.context.got.post('spot7', { json: EmptyField_4 })
+  );
+  
+  // Ελέγχουμε ότι η απόκριση έχει το σωστό κωδικό σφάλματος (404), ο οποίος δηλώνει ότι το αίτημα δεν είναι έγκυρο.
+  t.is(error.response.statusCode, 404);
+  
+});
+
+// //Αποτυχία λόγω μη συμπληρωμένων πεδίων στο body του spot
+// test("POST /spot without required fields returns 404", async (t) => {
+//     const error = await t.throwsAsync(() => t.context.got.post('spot8', {
+//         json: { address: "", id: "", type: "", chargerAvailability: ""}
+//     }));
+//     t.is(error.response.statusCode, 404); // Ελέγχουμε ότι ο κώδικας επστροφής είναι 404
+// });
 
 //Αποτυχία λόγω απουσίας της διεύθυνσης της θέσης
 test("POST /spot with missing address returns 404", async (t) => {
