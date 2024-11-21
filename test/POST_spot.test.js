@@ -28,19 +28,25 @@ test.after.always((t) => {
 // Μπορεί να φταίει το γεγονός ότι δεν το έχω γραψει μέσα στο createSpot στο SpotService.js
 
 
-// test('POST /spot - Successfully creates new spots', async(t) => {
-//   const spot3 = {
-//     address: 'Naxou 75',
-//     id: 125,
-//     type: "Underground",
-//     chargerAvailability: false
+// test('POST /spot - Successfully creates new spots', async (t) => {
+//   // Send POST request to the correct endpoint 'spot' (assuming the endpoint is '/spot')
+//   const { body, statusCode } = await t.context.got.post('spot3', {
+//     json: { address: "Naxou 11", id: 184, type: "Open", chargerAvailability: false }
+//   });
+
+//   // Expected response object
+//   const expectedResponse = {
+//     "address": "Naxou 11",
+//     "id": 184,
+//     "type": "Open",
+//     "chargerAvailability": false
 //   };
 
-//   const error = await t.throwsAsync(
-//     t.context.got.post('newSpot',{json: spot3})
-//   );
+//   // Check that the response body is equal to the expected response
+//   t.deepEqual(body, expectedResponse);
 
-//   t.is(error.response.statusCode, 200); //Ελέγχω ότι το response csde είναι 200(επιτυχία)
+//   // Check that the status code is 200 (success)
+//   t.is(statusCode, 200);
 // });
 
 
