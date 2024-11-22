@@ -42,8 +42,8 @@ exports.makeReservation = function(body) {
     } ];
     if (Object.keys(examples).length > 0) {
       resolve(examples[Object.keys(examples)[0]]);
-    resolve();
-  }else{
+  }
+  else{
     resolve();
   }
   });
