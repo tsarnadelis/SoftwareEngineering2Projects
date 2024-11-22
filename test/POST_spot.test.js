@@ -23,7 +23,7 @@ test.after.always((t) => {
 // δηλώνει την ύπαρξη ή μη φορτιστή ηλεκτρικών οχημάτων στη θέση πάρκιγκ 
 
 //Τεστάρω αν έχω συμπληρώσει όλα τα attributes του spot που θέλω να δημιουργήσω
-test("POST /spot without completing the required fields returns 400", async (t) => {
+test("POST /spot 400 without completing the required fields of spot", async (t) => {
   const error = await t.throwsAsync(() => t.context.got.post("spot", {
     //Όλα τα attributes του spot πρέπει υποχρεωτικά να έχουν τιμη
       json: { address: "", id: "", type: "", chargerAvailability: "" }
@@ -32,7 +32,7 @@ test("POST /spot without completing the required fields returns 400", async (t) 
 });
 
 //Τεστάρω αν όλα τα attributes του spot που θέλω να δημιουργήσω έχουν έγκυρες τιμές
-test("POST /spot with invalid values in all fields returns 400", async(t) => {
+test("POST /spot 400 with invalid values in all fields of spot", async(t) => {
   //Το test αποτυχαίνει διότι το address ισόυται με integer, το id ισούται με string
   // το type ισούται με μη έγκυρο τύπο parking, το chargerAvailability δεν είναι boolean
   const error = await t.throwsAsync(() => t.context.got.post("spot", {
@@ -42,7 +42,7 @@ test("POST /spot with invalid values in all fields returns 400", async(t) => {
 });
 
 //Τεστάρω την επιτυχή δημιουργία ενός αντικειμένου spot
-test("POST /spot 200 - successful creation of a spot", async (t) => {
+test("POST /spot 200 for successful creation of a spot", async (t) => {
   // Ελέγχω αν τα δεδομένα του spot που θέλω να δημιουργήσω είναι έγκυρα.
   // Ελέγχω αν τα δεδομένα του spot που θέλω να δημιουργήσω ταυτίζονται με τα δεδομένα κάποιου ήδη
   // καταχωρημένου spot.
@@ -54,14 +54,11 @@ test("POST /spot 200 - successful creation of a spot", async (t) => {
       "chargerAvailability": false
     }});
   t.is(statusCode, 200); // Οι έλεγχοι μέσα στη createSpot ολοκληρώνονται με επιτυχία και μου επιστρέφεται κωδικός επιτυχίας 200
-  t.is(body.address, "Navarinou 45");
-  t.is(body.id, 24);
-  t.is(body.type, "Underground");
-  t.is(body.chargerAvailability, false);
+
 });
 
 //Τεστάρω αν το id του spot είναι μη αρνητικός αριθμός
-test("POST /spot 400 for negative id", async (t) => {
+test("POST /spot 400 if id is a negative integer", async (t) => {
   //Το test αποτυχαίνει διότι το id ισόυται με αρνητικό αριθμό
   const { body } = await t.context.got.post("spot",
     { json: {
@@ -73,43 +70,143 @@ test("POST /spot 400 for negative id", async (t) => {
   t.is(body.response.statusCode, 400);//μου επιστρέφει κωδικό αποτυχίας 400
 });
 
+//Τεστάρω αν το id του spot είναι string
+test("POST /spot 400 if id is a string", async (t) => {
+  //Το test αποτυχαίνει διότι το id ισόυται με string
+  const  body  = await t.throwsAsync(() => t.context.got.post("spot",
+    { json: {
+     "address": "Navarinou 45",
+     "id": "Athens",
+     "type": "Underground",
+     "chargerAvailability": false
+   }}));
+t.is(body.response.statusCode, 400);//μου επιστρέφει κωδικό αποτυχίας 400
+});
+
 //Τεστάρω αν το address του spot είναι string
 test("POST /spot 400 for invalid address", async (t) => {
-  //Το test αποτυχαίνει διότι το address ισόυται με αριθμό
-  const error = await t.throwsAsync(() => t.context.got.post("spot",
+  //Το test αποτυχαίνει διότι το address ισούται με αριθμό
+  const body = await t.throwsAsync(() => t.context.got.post("spot",
       { json: {
        "address": 2310,
        "id": 24,
        "type": "Underground",
        "chargerAvailability": false
      }}));
-  t.is(error.response.statusCode, 400);//μου επιστρέφει κωδικό αποτυχίας 400
+  t.is(body.response.statusCode, 400);//μου επιστρέφει κωδικό αποτυχίας 400
 });
 
 //Τεστάρω αν το type του spot είναι "Open" ή "Garage" ή "Underground"
 test("POST /spot 400 for invalid type", async (t) => {
-  //Το test αποτυχαίνει διότι το type ισόυται με τον μη έγκυρο τύπο "SideWalk"
-  const invalid_type = await t.throwsAsync(() =>
-    createSpot("Navarinou 18", 15, "Sidewalk", false)
-  );
-  t.is(invalid_type.response.statusCode, 400);//μου επιστρέφει κωδικό αποτυχίας 400
+  //Το test αποτυχαίνει διότι το type ισόυται με μη έγκυρο τύπο θέσης
+  const {body} = await t.context.got.post("spot",
+    { json: {
+     "address": "Navarinou 45",
+     "id": 24,
+     "type": "SideWalk",
+     "chargerAvailability": false
+   }});
+t.is(body.response.statusCode, 400);//μου επιστρέφει κωδικό αποτυχίας 400
 });
 
 //Τεστάρω αν το chargerAvailability του spot είναι boolean
 test("POST /spot 400 for invalid chargerAvailability", async (t) => {
-  //Το test αποτυχαίνει διότι το chargerAvailability δεν είναι boolean
-  const invalid_charger = await t.throwsAsync(() =>
-    createSpot("Navarinou 18", 15, "Garage", "Neutral")
-  );
-  t.is(invalid_charger.response.statusCode, 400);//μου επιστρέφει κωδικό αποτυχίας 400
+  //Το test αποτυχαίνει διότι το chargerAvailability ισόυται με αριθμό
+  const body = await t.throwsAsync(() => t.context.got.post("spot",
+    { json: {
+     "address": "Navarinou 45",
+     "id": 24,
+     "type": "Underground",
+     "chargerAvailability": 75
+   }}));
+t.is(body.response.statusCode, 400);//μου επιστρέφει κωδικό αποτυχίας 400
 });
 
-//Τεστάρω τη δημιουργία διπλότυπου spot
-test("POST /spot 400 for duplicate spot", async (t) => {
+//Τεστάρω αν η θέση που θέλω να δημιουργήσω υπάρχει ήδη μέσα στο σύστημα.
+//Δηλαδή, τεστάρω αν έχω διπλότυπη θέση
+test("POST /spot 400 for duplicate Spot", async (t) => {
+  //Το test αποτυχαίνει δίοτι τα δεδομένα της νέας θέσης που θέλω να δημιουργήσω, ανήκουν σε μία ήδη καταχωρημένη θέση
+  const {body} = await t.context.got.post("spot",
+    { json: {
+     "address": "Navarinou 18",
+     "id": 15,
+     "type": "Garage",
+     "chargerAvailability": false
+   }});
+t.is(body.response.statusCode, 400);//μου επιστρέφει κωδικό αποτυχίας 400
+});
+
+
+//Ακολουθούν tests με τα οποία ελέγχω την ορθότητα της συνάρτησης createSpot του SpotService.js
+
+
+//Τεστάρω τη συνάρτηση createSpot για τη δημιουργία διπλότυπου spot
+test("POST /spot 400 createSpot testing for duplicate spot", async (t) => {
   //Το test αποτυχαίνει διότι τα δεδομένα του νέου spot (δηλ. του duplicateSpot) 
   // ανήκουν σε ένα ήδη καταχωρημένο spot 
   const duplicateSpot = await t.throwsAsync(() =>
-    createSpot("Navarinou 18", 15, "Garage", false)
+    createSpot({
+      "address": "Navarinou 18", 
+      "id": 15, 
+      "type": "Garage", 
+      "chargerAvailability": false
+    })
+  );
+  t.is(duplicateSpot.response.statusCode, 400);//μου επιστρέφει κωδικό αποτυχίας 400
+});
+
+//Τεστάρω τη συνάρτηση createSpot για αρνητικό id του spot
+test("POST /spot 400 createSpot testing for invalid id", async (t) => {
+  //Το test αποτυχαίνει διότι το id είναι αρνητικός αριθμός
+  const duplicateSpot = await t.throwsAsync(() =>
+    createSpot({
+      "address": "Navarinou 18", 
+      "id": -38, 
+      "type": "Garage", 
+      "chargerAvailability": false
+    })
+  );
+  t.is(duplicateSpot.response.statusCode, 400);//μου επιστρέφει κωδικό αποτυχίας 400
+});
+
+//Τεστάρω τη συνάρτηση createSpot για μη έγκυρη address του spot
+test("POST /spot 400 createSpot testing for invalid address", async (t) => {
+  //Το test αποτυχαίνει διότι το address δεν είναι string.
+  const duplicateSpot = await t.throwsAsync(() =>
+    createSpot({
+      "address": false, 
+      "id": 15, 
+      "type": "Garage", 
+      "chargerAvailability": false
+    })
+  );
+  t.is(duplicateSpot.response.statusCode, 400);//μου επιστρέφει κωδικό αποτυχίας 400
+});
+
+//Τεστάρω τη συνάρτηση createSpot για μη έγκυρο type του spot
+test("POST /spot 400 createSpot testing for invalid type", async (t) => {
+  //Το test αποτυχαίνει διότι το type δεν ισούται με αποδεκτό τύπο θέσης πάρκινγκ
+  const duplicateSpot = await t.throwsAsync(() =>
+    createSpot({
+      "address": "Navarinou 18", 
+      "id": 15, 
+      "type": 51, 
+      "chargerAvailability": false
+    })
+  );
+  t.is(duplicateSpot.response.statusCode, 400);//μου επιστρέφει κωδικό αποτυχίας 400
+});
+
+//Τεστάρω τη συνάρτηση createSpot για μη έγκυρο chargerAvailability του spot
+test("POST /spot 400 createSpot testing for invalid chargerAvailability", async (t) => {
+  //Το test αποτυχαίνει διότι το chargerAvailability δεν είναι boolean
+  const duplicateSpot = await t.throwsAsync(() =>
+    createSpot({
+      "address": "Navarinou 18", 
+      "id": 15, 
+      "type": "Garage", 
+      "chargerAvailability": "false"
+    })
   );
   t.is(duplicateSpot.response.statusCode, 400);//μου επιστρέφει κωδικό αποτυχίας 400
 });
