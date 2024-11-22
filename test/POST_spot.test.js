@@ -15,6 +15,13 @@ test.after.always((t) => {
     t.context.server.close();
 });
 
+// address === η διεύθυνση της θέσης πάρκινγκ
+// type === ο τύπος της θέσης πάρκινγκ
+// id === το αναγνωριστικό id της θέσης πάρκινγκ
+
+// chargerAvailability === η διαθεσιμότητα φορτιστή της θέσης πάρκινγκ, 
+// δηλώνει την ύπαρξη ή μη φορτιστή ηλεκτρικών οχημάτων στη θέση πάρκιγκ 
+
 //Τεστάρω αν έχω συμπληρώσει όλα τα attributes του spot που θέλω να δημιουργήσω
 test("POST /spot without completing the required fields returns 400", async (t) => {
   const error = await t.throwsAsync(() => t.context.got.post("spot", {
