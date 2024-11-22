@@ -158,7 +158,7 @@ test("POST /spot 400 createSpot testing for duplicate spot", async (t) => {
 //Τεστάρω τη συνάρτηση createSpot για αρνητικό id του spot
 test("POST /spot 400 createSpot testing for invalid id", async (t) => {
   //Το test αποτυχαίνει διότι το id είναι αρνητικός αριθμός
-  const duplicateSpot = await t.throwsAsync(() =>
+  const invalid_id = await t.throwsAsync(() =>
     createSpot({
       "address": "Navarinou 18", 
       "id": -38, 
@@ -166,13 +166,13 @@ test("POST /spot 400 createSpot testing for invalid id", async (t) => {
       "chargerAvailability": false
     })
   );
-  t.is(duplicateSpot.response.statusCode, 400);//μου επιστρέφει κωδικό αποτυχίας 400
+  t.is(invalid_id.response.statusCode, 400);//μου επιστρέφει κωδικό αποτυχίας 400
 });
 
 //Τεστάρω τη συνάρτηση createSpot για μη έγκυρη address του spot
 test("POST /spot 400 createSpot testing for invalid address", async (t) => {
   //Το test αποτυχαίνει διότι το address δεν είναι string.
-  const duplicateSpot = await t.throwsAsync(() =>
+  const invalid_address = await t.throwsAsync(() =>
     createSpot({
       "address": false, 
       "id": 15, 
@@ -180,13 +180,13 @@ test("POST /spot 400 createSpot testing for invalid address", async (t) => {
       "chargerAvailability": false
     })
   );
-  t.is(duplicateSpot.response.statusCode, 400);//μου επιστρέφει κωδικό αποτυχίας 400
+  t.is(invalid_address.response.statusCode, 400);//μου επιστρέφει κωδικό αποτυχίας 400
 });
 
 //Τεστάρω τη συνάρτηση createSpot για μη έγκυρο type του spot
 test("POST /spot 400 createSpot testing for invalid type", async (t) => {
   //Το test αποτυχαίνει διότι το type δεν ισούται με αποδεκτό τύπο θέσης πάρκινγκ
-  const duplicateSpot = await t.throwsAsync(() =>
+  const invalid_type = await t.throwsAsync(() =>
     createSpot({
       "address": "Navarinou 18", 
       "id": 15, 
@@ -194,13 +194,13 @@ test("POST /spot 400 createSpot testing for invalid type", async (t) => {
       "chargerAvailability": false
     })
   );
-  t.is(duplicateSpot.response.statusCode, 400);//μου επιστρέφει κωδικό αποτυχίας 400
+  t.is(invalid_type.response.statusCode, 400);//μου επιστρέφει κωδικό αποτυχίας 400
 });
 
 //Τεστάρω τη συνάρτηση createSpot για μη έγκυρο chargerAvailability του spot
 test("POST /spot 400 createSpot testing for invalid chargerAvailability", async (t) => {
   //Το test αποτυχαίνει διότι το chargerAvailability δεν είναι boolean
-  const duplicateSpot = await t.throwsAsync(() =>
+  const invalid_charger = await t.throwsAsync(() =>
     createSpot({
       "address": "Navarinou 18", 
       "id": 15, 
@@ -208,5 +208,5 @@ test("POST /spot 400 createSpot testing for invalid chargerAvailability", async 
       "chargerAvailability": "false"
     })
   );
-  t.is(duplicateSpot.response.statusCode, 400);//μου επιστρέφει κωδικό αποτυχίας 400
+  t.is(invalid_charger.response.statusCode, 400);//μου επιστρέφει κωδικό αποτυχίας 400
 });
