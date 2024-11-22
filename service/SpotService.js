@@ -8,21 +8,19 @@
  * body ParkingSpot 
  * no response value expected for this operation
  **/
-exports.createSpot = function (address, id, type, chargerAvailability) {
+exports.createSpot = function (body) {
   return new Promise((resolve, reject) => {
-    
+
     // Τα δεδομένα των ήδη καταχωρημένων θέσεων μέσα στο σύστημα
-    var existingSpots = [
-      {
+    var existingSpots = {
         "address": "Navarinou 18",
         "id": 15,
         "type": "Garage",
         "chargerAvailability": false
-      }
-    ];
+      };
 
     // Το address πρέπει να είναι string
-    if (!address || typeof address !== 'string') {
+    if (!body.address) {
       //αν το address έχει μη έγκυρη τιμή τότε έχω σφάλμα με κωδικό σφάλματος 400
       const error = new Error("Invalid address: must be a string.");
       error.response = { statusCode: 400 };
@@ -31,25 +29,25 @@ exports.createSpot = function (address, id, type, chargerAvailability) {
     }
     
     //Το id πρέπει να είναι μη αρνητικός ακέραιος αριθμός
-    if (!Number.isInteger(id) || id < 0) {
+    if (!body.id || body.id < 0) {
       //αν το id έχει μη έγκυρη τιμή τότε έχω σφάλμα με κωδικό σφάλματος 400
       const error = new Error("Invalid id: must be a positive integer.");
       error.response = { statusCode: 400 };
       reject(error);
       return;
     }
-    
+
     //Το type πρέπει να ισούται με "Garage" ή "Open" ή "Underground"
-    if (!["Garage", "Open", "Underground"].includes(type)) {
+    if (!["Garage", "Open", "Underground"].includes(body.type)) {
       //αν το type έχει μη έγκυρη τιμή τότε έχω σφάλμα με κωδικό σφάλματος 400
       const error = new Error("Invalid type: must be one of 'Garage', 'Open', or 'Underground'.");
       error.response = { statusCode: 400 };
       reject(error);
       return;
     }
-    
+
     //Το chargerAvailability πρέπει να είναι boolean
-    if (typeof chargerAvailability !== 'boolean') {
+    if (typeof body.chargerAvailability !== 'boolean') {
       //αν το chargerAvailability έχει μη έγκυρη τιμή τότε έχω σφάλμα με κωδικό σφάλματος 400
       const error = new Error("Invalid chargerAvailability: must be a boolean.");
       error.response = { statusCode: 400 };
@@ -60,13 +58,10 @@ exports.createSpot = function (address, id, type, chargerAvailability) {
     // Έλεγχος αν υπάρχει ήδη το spot , δηλαδή γίνεται έλεγχος για διπλότυπη θέση
     // Αν όλα τα attributes του existingSpots ισούται ένα προς ένα με όλα τα attributes του spot που θέλω να φτιάξω,
     // τότε θέλω να δημιουργήσω μια διπλότυπη θέση. Άρα, έχω σφάλμα
-    const spotExists = existingSpots.some(
-      (spot) =>
-        spot.id === id &&
-        spot.address === address &&
-        spot.type === type &&
-        spot.chargerAvailability === chargerAvailability
-    );
+    const spotExists = existingSpots.id === body.id &&
+               existingSpots.address === body.address &&
+               existingSpots.type === body.type &&
+               existingSpots.chargerAvailability === body.chargerAvailability;
     
     if (spotExists) {
       //Αν βρεθεί διπλότυπη θέση τότε έχω σφάλμα με κωδικό σφάλματος 400
@@ -76,16 +71,11 @@ exports.createSpot = function (address, id, type, chargerAvailability) {
       return;
     }
 
-    // Αν δεν υπάρχουν σφάλματα στους παραπάνω ελέγχους, 
-    // δημιουργούμε το spot και το προσθέτουμε στη λίστα των νέων θέσεων πάρκινγκ
-    const newSpot = { address, id, type, chargerAvailability };
-    existingSpots.push(newSpot); // Προσθήκη του νέου spot
+    // Η θέση έχει περάσει όλους τους ελέγχους και μπορώ να την προσθέσω
+    // Δεν το κάνω, καθώς η συνάρτηση είναι dummy
 
-    // Επιστρέφουμε επιτυχία 200
-    resolve({
-      statusCode: 200,
-      spot: newSpot  // Επιστροφή του νέου spot
-    });
+    // Επιστρέφει το body της καινούριας θέσης
+    resolve(body);
   });
 };
 
