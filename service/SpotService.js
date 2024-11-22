@@ -8,68 +8,86 @@
  * body ParkingSpot 
  * no response value expected for this operation
  **/
-exports.createSpot = function(body) {
-  return new Promise(function(resolve, reject) {
-    //Έλεγχος αν το body είναι ορισμένο και περιέχει δεδομένα
-    if (!body || typeof body != 'object') {
-      reject(new Error("Invalid input: body must be a non-empty object"));
-      return;
-    }
+exports.createSpot = function (address, id, type, chargerAvailability) {
+  return new Promise((resolve, reject) => {
     
-    //Έλεγχος για τα απαιτούμενα γνωρίσματα του body
-    const requiredAttributes = ['address', 'id', 'type', 'chargerAvailability'];
-    for (const attribute of requiredAttributes) {
-      if (!body.hasOwnProperty(attribute)) {
-        reject(new Error(`Missing required attribute: ${attribute}`));
-        return;
+    // Τα δεδομένα των ήδη καταχωρημένων θέσεων μέσα στο σύστημα
+    var existingSpots = [
+      {
+        "address": "Navarinou 18",
+        "id": 15,
+        "type": "Garage",
+        "chargerAvailability": false
       }
+    ];
+
+    // Το address πρέπει να είναι string
+    if (!address || typeof address !== 'string') {
+      //αν το address έχει μη έγκυρη τιμή τότε έχω σφάλμα με κωδικό σφάλματος 400
+      const error = new Error("Invalid address: must be a string.");
+      error.response = { statusCode: 400 };
+      reject(error);
+      return;
     }
     
-    //έλεγχος των τιμών των γνωρισμάτων του body
-
-    //Η θέση πρέπει να έχει διεύθυνση
-    if (typeof body.address !== 'string' || body.address.trim() === '') {
-      reject(new Error("Invalid address: must be a non-empty string"));
+    //Το id πρέπει να είναι μη αρνητικός ακέραιος αριθμός
+    if (!Number.isInteger(id) || id < 0) {
+      //αν το id έχει μη έγκυρη τιμή τότε έχω σφάλμα με κωδικό σφάλματος 400
+      const error = new Error("Invalid id: must be a positive integer.");
+      error.response = { statusCode: 400 };
+      reject(error);
       return;
     }
- 
-    //Η θέση πρέπει να έχει ακέραιο και μη αρνητικό id
-    if (typeof body.id !== 'number' || body.id < 0 || !Number.isInteger(body.id)) {
-      reject(new Error("Invalid id: must be a non-negative integer"));
+    
+    //Το type πρέπει να ισούται με "Garage" ή "Open" ή "Underground"
+    if (!["Garage", "Open", "Underground"].includes(type)) {
+      //αν το type έχει μη έγκυρη τιμή τότε έχω σφάλμα με κωδικό σφάλματος 400
+      const error = new Error("Invalid type: must be one of 'Garage', 'Open', or 'Underground'.");
+      error.response = { statusCode: 400 };
+      reject(error);
       return;
     }
-
-    //Η θέση πρέπει να έχει τύπο 'Open' ή 'Garage' ή 'Underground'
-    const spot_types = ["Open", "Garage", "Underground"]
-    if (typeof body.type !== 'string' || (body.type !== spot_types[0] && body.type !== spot_types[1] && body.type !== spot_types[2])) {
-      reject(new Error("Invalid type: must be 'Open' or 'Garage' or 'Underground'"));
-      return;
-    }
-
-    //Στη θέση πρέπει να δηλώνεται η ύπαρξη ή όχι φορτιστή ηλεκτρικών οχημάτων
-    if (typeof body.chargerAvailability !== 'boolean') {
-      reject(new Error("Invalid chargerAvailability: must be a boolean"));
-      return;
-    }
-
-    //Προσομοίωση με dummy "αποθηκευμένα" δεδομένα
-    const existingSpots = {address: "Navarinou 18", id: 15, type: "Garage", chargerAvailability: false};
-
-    //Έλεγχος αν η θέση(δηλ. το αντικείμενο spot) που πρόκειται να δημιουργήσω υπάρχει ήδη στο σύστημα
-    const spotExists = existingSpots.some(spot => spot.address === body.address && spot.type === body.type && 
-      spot.chargerAvailability === body.chargerAvailability);
-    if (spotExists) { //Ο έλεγχος γίνεται με βάση τη διεύθυνση, τον τύπο , τη διαθεσιμότητα φορτιστή
-      //Θεώρησα πως αν έχουμε 2 θέσεις με διαφορετικά id και τα υπόλοιπα γνωρίσματά τους ίδια , τότε έχουμε ουσιατικά μια διπλότυπη θέση.
-      //Δηλαδή έχουμε σφάλμα. Επίσης, θεώρησα αχρείαστο να συγκρίνω τα id 2 θέσεων διότι η POST σε κάθε νέο αντικείμενο spot που δημιουργεί,
-      //του δίνει διαφορετικό id.
-      reject(new Error("Spot already exists: a spot with the same id or the same address already exists"));
+    
+    //Το chargerAvailability πρέπει να είναι boolean
+    if (typeof chargerAvailability !== 'boolean') {
+      //αν το chargerAvailability έχει μη έγκυρη τιμή τότε έχω σφάλμα με κωδικό σφάλματος 400
+      const error = new Error("Invalid chargerAvailability: must be a boolean.");
+      error.response = { statusCode: 400 };
+      reject(error);
       return;
     }
 
-    //Αν δεν παρουσιαστεί σφάλμα σε κάποιο από τα παραπάνω, τότε δημιουργείται η θέση
-    resolve();
+    // Έλεγχος αν υπάρχει ήδη το spot , δηλαδή γίνεται έλεγχος για διπλότυπη θέση
+    // Αν όλα τα attributes του existingSpots ισούται ένα προς ένα με όλα τα attributes του spot που θέλω να φτιάξω,
+    // τότε θέλω να δημιουργήσω μια διπλότυπη θέση. Άρα, έχω σφάλμα
+    const spotExists = existingSpots.some(
+      (spot) =>
+        spot.id === id &&
+        spot.address === address &&
+        spot.type === type &&
+        spot.chargerAvailability === chargerAvailability
+    );
+    
+    if (spotExists) {
+      //Αν βρεθεί διπλότυπη θέση τότε έχω σφάλμα με κωδικό σφάλματος 400
+      const error = new Error("Spot already exists: a spot with the same attributes already exists.");
+      error.response = { statusCode: 400 };
+      reject(error);
+      return;
+    }
+
+    // Αν δεν υπάρχουν σφάλματα στους παραπάνω ελέγχους, 
+    // δημιουργούμε το spot και το προσθέτουμε στη λίστα των νέων θέσεων πάρκινγκ
+    const newSpot = { address, id, type, chargerAvailability };
+    existingSpots.push(newSpot); // Προσθήκη του νέου spot
+
+    // Επιστρέφουμε επιτυχία 200
+    resolve({
+      statusCode: 200,
+      spot: newSpot  // Επιστροφή του νέου spot
+    });
   });
-}
+};
 
 
 /**
@@ -78,20 +96,20 @@ exports.createSpot = function(body) {
  *
  * returns List
  **/
-exports.getSpots = function() {
-  return new Promise(function(resolve, reject) {
+exports.getSpots = function () {
+  return new Promise(function (resolve, reject) {
     var examples = {};
-    examples['application/json'] = [ {
-  "address" : "address",
-  "id" : 0,
-  "type" : "type",
-  "chargerAvailability" : true
-}, {
-  "address" : "address",
-  "id" : 0,
-  "type" : "type",
-  "chargerAvailability" : true
-} ];
+    examples['application/json'] = [{
+      "address": "address",
+      "id": 0,
+      "type": "type",
+      "chargerAvailability": true
+    }, {
+      "address": "address",
+      "id": 0,
+      "type": "type",
+      "chargerAvailability": true
+    }];
     if (Object.keys(examples).length > 0) {
       resolve(examples[Object.keys(examples)[0]]);
     } else {
@@ -112,8 +130,8 @@ exports.getSpots = function() {
  * id Integer 
  * no response value expected for this operation
  **/
-exports.modifySpot = function(body,address,type,charger,id) {
-  return new Promise(function(resolve, reject) {
+exports.modifySpot = function (body, address, type, charger, id) {
+  return new Promise(function (resolve, reject) {
     resolve();
   });
 }
@@ -126,8 +144,8 @@ exports.modifySpot = function(body,address,type,charger,id) {
  * id Integer 
  * no response value expected for this operation
  **/
-exports.removeSpot = function(id) {
-  return new Promise(function(resolve, reject) {
+exports.removeSpot = function (id) {
+  return new Promise(function (resolve, reject) {
     resolve();
   });
 }
@@ -142,20 +160,20 @@ exports.removeSpot = function(id) {
  * charger Boolean 
  * returns List
  **/
-exports.searchSpot = function(address,type,charger) {
-  return new Promise(function(resolve, reject) {
+exports.searchSpot = function (address, type, charger) {
+  return new Promise(function (resolve, reject) {
     var examples = {};
-    examples['application/json'] = [ {
-  "address" : "address",
-  "id" : 0,
-  "type" : "type",
-  "chargerAvailability" : true
-}, {
-  "address" : "address",
-  "id" : 0,
-  "type" : "type",
-  "chargerAvailability" : true
-} ];
+    examples['application/json'] = [{
+      "address": "address",
+      "id": 0,
+      "type": "type",
+      "chargerAvailability": true
+    }, {
+      "address": "address",
+      "id": 0,
+      "type": "type",
+      "chargerAvailability": true
+    }];
     if (Object.keys(examples).length > 0) {
       resolve(examples[Object.keys(examples)[0]]);
     } else {

@@ -2,238 +2,96 @@ const http = require('http');
 const test = require('ava');
 const got = require('got');
 const app = require('../index.js');
-const { createSpot } = require('../service/SpotService.js');
-
-// εχω θεμα : το successful response code το βαλαμε 201 στο yaml , ενω παιρνω response code 200 όταν τα test τρέχουν σωστά
-// Να το φτιάξουμε
+const { createSpot } = require('../service/SpotService.js'); 
 
 test.before(async (t) => {
-	t.context.server = http.createServer(app);
-  const server = t.context.server.listen();
-  const { port } = server.address();
+    t.context.server = http.createServer(app);
+    const server = t.context.server.listen();
+    const { port } = server.address();
     t.context.got = got.extend({ responseType: "json", prefixUrl: `http://localhost:${port}` });
-  });
+});
 
 test.after.always((t) => {
-	t.context.server.close();
+    t.context.server.close();
 });
 
-//Δεν Χρησιμοποιώ για ονόματα αντικειμένων το 'spot' 
-//διότι το 'spot' χρησιμοποιήθηκε στο GET_spot.test.js
-//Παρατήρησα πως αν χρησιμοποιήσω και εδώ 'spot' θα έχω σφάλμα 
-
-
-
-// Επιτυχής δημιουργία νέων θέσεων --> το endpoint αυτο μου βγαζει σφάλμα 404 ενώ κανονικά έπρεπε να μου δίνει 200
-// Μπορεί να φταίει το γεγονός ότι δεν το έχω γραψει μέσα στο createSpot στο SpotService.js
-
-
-// test('POST /spot - Successfully creates new spots', async (t) => {
-//   // Send POST request to the correct endpoint 'spot' (assuming the endpoint is '/spot')
-//   const { body, statusCode } = await t.context.got.post('spot3', {
-//     json: { address: "Naxou 11", id: 184, type: "Open", chargerAvailability: false }
-//   });
-
-//   // Expected response object
-//   const expectedResponse = {
-//     "address": "Naxou 11",
-//     "id": 184,
-//     "type": "Open",
-//     "chargerAvailability": false
-//   };
-
-//   // Check that the response body is equal to the expected response
-//   t.deepEqual(body, expectedResponse);
-
-//   // Check that the status code is 200 (success)
-//   t.is(statusCode, 200);
-// });
-
-
-
-//Αναμένω αποτυχία του test λόγω διπλότυπου αντικειμένου
-test('POST /spot - Fails when spot already exists and returns 404', async (t) => {
-  const duplicateSpot = {
-    address: 'Navarinou 18',
-    id: 15,
-    type: "Garage",
-    chargerAvailability: false
-  };
-
-  const error = await t.throwsAsync(
-    t.context.got.post('spot4',{json: duplicateSpot})
-  );
-
-  t.is(error.response.statusCode, 404); //Ελέγχω ότι το response code είναι 404 (σφάλμα)
-})
-
-//Αποτυχία λόγω μη έγκυρης διεύθυνσης
-test('POST /spot - Fails when address value is invalid and returns 404', async (t) => {
-  const InvalidSpot_1 = {
-    address: 1235, 
-    id: 105, 
-    type: "Open", 
-    chargerAvailability: true
-  }
-  // Χρησιμοποιούμε τη μέθοδο `throwsAsync` για να περιμένουμε ότι το αίτημα θα αποτύχει και θα ρίξει εξαίρεση.
-
-  const error = await t.throwsAsync(
-  // Κάνουμε ένα POST αίτημα στο endpoint 'spot5' με τα δεδομένα InvalidSpot_1.
-  // Αναμένουμε ότι τα δεδομένα αυτά θα προκαλέσουν σφάλμα (λόγω μη έγκυρης διεύθυνσης).
-  t.context.got.post('spot5', { json: InvalidSpot_1 })
-);
-
-// Ελέγχουμε ότι η απόκριση έχει το σωστό κωδικό σφάλματος (404), ο οποίος δηλώνει ότι το αίτημα δεν είναι έγκυρο.
-t.is(error.response.statusCode, 404);
-});
-
-//Αποτυχία λόγω αρνητικού id
-test('POST /spot - Fails when id value is invalid and returns 404', async (t) => {
-  const InvalidSpot_2 = {
-    address: "Samou 43", 
-    id: -12, 
-    type: "Open", 
-    chargerAvailability: true
-  }
-    // Χρησιμοποιούμε τη μέθοδο `throwsAsync` για να περιμένουμε ότι το αίτημα θα αποτύχει και θα ρίξει εξαίρεση.
-
-    const error = await t.throwsAsync(
-    // Κάνουμε ένα POST αίτημα στο endpoint 'spot5' με τα δεδομένα InvalidSpot_2.
-    // Αναμένουμε ότι τα δεδομένα αυτά θα προκαλέσουν σφάλμα (λόγω μη έγκυρου id).
-    t.context.got.post('spot6', { json: InvalidSpot_2 })
-  );
-  
-  // Ελέγχουμε ότι η απόκριση έχει το σωστό κωδικό σφάλματος (404), ο οποίος δηλώνει ότι το αίτημα δεν είναι έγκυρο.
-  t.is(error.response.statusCode, 404);
-  
-});
-
-//Αποτυχία λόγω μη έγκυρου τύπου
-test('POST /spot - Fails when type value is invalid and returns 404', async (t) => {
-  const InvalidSpot_3 = {
-    address: "Dodonis 19", 
-    id: 10, 
-    type: "Sidewalk", 
-    chargerAvailability: true
-  }
-    // Χρησιμοποιούμε τη μέθοδο `throwsAsync` για να περιμένουμε ότι το αίτημα θα αποτύχει και θα ρίξει εξαίρεση.
-
-    const error = await t.throwsAsync(
-    // Κάνουμε ένα POST αίτημα στο endpoint 'spot5' με τα δεδομένα InvalidSpot_3.
-    // Αναμένουμε ότι τα δεδομένα αυτά θα προκαλέσουν σφάλμα (λόγω μη έγκυρου τύπου).
-    t.context.got.post('spot7', { json: InvalidSpot_3 })
-  );
-  
-  // Ελέγχουμε ότι η απόκριση έχει το σωστό κωδικό σφάλματος (404), ο οποίος δηλώνει ότι το αίτημα δεν είναι έγκυρο.
-  t.is(error.response.statusCode, 404);
-  
-});
-
-
-test("POST /spot without required address field returns 404", async (t) => {
-  const EmptyField_1 = {
-    address: "", 
-    id: 100, 
-    type: "Open", 
-    chargerAvailability: true
-  }
-    
-    const error = await t.throwsAsync(
-    t.context.got.post('spot8', { json: EmptyField_1 })
-  );
-  
-  // Ελέγχουμε ότι η απόκριση έχει το σωστό κωδικό σφάλματος (404), ο οποίος δηλώνει ότι το αίτημα δεν είναι έγκυρο.
-  t.is(error.response.statusCode, 404);
-  
-});
-
-test("POST /spot without required id field returns 404", async (t) => {
-  const EmptyField_2 = {
-    address: "Dilou 48", 
-    id: "", 
-    type: "Garage", 
-    chargerAvailability: false
-  }
-    
-    const error = await t.throwsAsync(
-    t.context.got.post('spot7', { json: EmptyField_2 })
-  );
-  
-  // Ελέγχουμε ότι η απόκριση έχει το σωστό κωδικό σφάλματος (404), ο οποίος δηλώνει ότι το αίτημα δεν είναι έγκυρο.
-  t.is(error.response.statusCode, 404);
-  
-});
-
-test("POST /spot without required type field returns 404", async (t) => {
-  const EmptyField_3 = {
-    address: "Mynokou 76", 
-    id: 489, 
-    type: "", 
-    chargerAvailability: false
-  }
-    
-    const error = await t.throwsAsync(
-    t.context.got.post('spot7', { json: EmptyField_3 })
-  );
-  
-  // Ελέγχουμε ότι η απόκριση έχει το σωστό κωδικό σφάλματος (404), ο οποίος δηλώνει ότι το αίτημα δεν είναι έγκυρο.
-  t.is(error.response.statusCode, 404);
-  
-});
-
-test("POST /spot without required chargerAvailability field returns 404", async (t) => {
-  const EmptyField_4 = {
-    address: "Tinou 90", 
-    id: 347, 
-    type: "Garage", 
-    chargerAvailability: ""
-  }
-    
-    const error = await t.throwsAsync(
-    t.context.got.post('spot7', { json: EmptyField_4 })
-  );
-  
-  // Ελέγχουμε ότι η απόκριση έχει το σωστό κωδικό σφάλματος (404), ο οποίος δηλώνει ότι το αίτημα δεν είναι έγκυρο.
-  t.is(error.response.statusCode, 404);
-  
-});
-
-// //Αποτυχία λόγω μη συμπληρωμένων πεδίων στο body του spot
-// test("POST /spot without required fields returns 404", async (t) => {
-//     const error = await t.throwsAsync(() => t.context.got.post('spot8', {
-//         json: { address: "", id: "", type: "", chargerAvailability: ""}
-//     }));
-//     t.is(error.response.statusCode, 404); // Ελέγχουμε ότι ο κώδικας επστροφής είναι 404
-// });
-
-//Αποτυχία λόγω απουσίας της διεύθυνσης της θέσης
-test("POST /spot with missing address returns 404", async (t) => {
-    const error = await t.throwsAsync(() => t.context.got.post('spot9', {
-        json: { id: 44, type: "Open", chargerAvailability: false }
-    }));
-    t.is(error.response.statusCode, 404); // Ελέγχουμε ότι ο κώδικας επστροφής είναι 404
-});
-
-// Αποτυχία λόγω απουσίας του id της θέσης
-test("POST /spot with missing id returns 404", async (t) => {
-    const error = await t.throwsAsync(() => t.context.got.post('spot10', {
-        json: { address : "Solomou 52",  type: "Garage", chargerAvailability: true}
-    }));
-    t.is(error.response.statusCode, 404); // Ελέγχουμε ότι ο κώδικας επστροφής είναι 404
-});
-
-//Αποτυχία λόγω απουσίας του τύπου της θέσης
-test("POST /spot with missing type returns 404", async (t) => {
-    const error = await t.throwsAsync(() => t.context.got.post('spot11', {
-        json: {address : "Papanikolaou",  id : 1091, chargerAvailability: false}
-    }));
-    t.is(error.response.statusCode, 404); // Ελέγχουμε ότι ο κώδικας επστροφής είναι 404
-});
-
-//Αποτυχία διότι δεν έχει δηλωθεί η ύπαρξη ή όχι ηλεκτρικού φορτιστή στη θέση
-test("POST /spot with missing chargerAvailability returns 404", async (t) => {
-  const error = await t.throwsAsync(() => t.context.got.post('spot12', {
-      json: {address : "Aetoraxis 22",  id : 1, type: "Open"}
+//Τεστάρω αν έχω συμπληρώσει όλα τα attributes του spot που θέλω να δημιουργήσω
+test("POST /spot without completing the required fields returns 400", async (t) => {
+  const error = await t.throwsAsync(() => t.context.got.post("spot", {
+    //Όλα τα attributes του spot πρέπει υποχρεωτικά να έχουν τιμη
+      json: { address: "", id: "", type: "", chargerAvailability: "" }
   }));
-  t.is(error.response.statusCode, 404); // Ελέγχουμε ότι ο κώδικας επστροφής είναι 404
+  t.is(error.response.statusCode, 400); //Το test αποτυχαίνει και μου επιστρέφει κωδικό 400
+});
+
+//Τεστάρω αν όλα τα attributes του spot που θέλω να δημιουργήσω έχουν έγκυρες τιμές
+test("POST /spot with invalid values in all fields returns 400", async(t) => {
+  //Το test αποτυχαίνει διότι το address ισόυται με integer, το id ισούται με string
+  // το type ισούται με μη έγκυρο τύπο parking, το chargerAvailability δεν είναι boolean
+  const error = await t.throwsAsync(() => t.context.got.post("spot", {
+    json: {address: 573, id:"Thessaloniki", type: "Stadium", chargerAvailability: "Neutral"}
+  }));
+  t.is(error.response.statusCode, 400);//Το test αποτυχαίνει και μου επιστρέφει κωδικό 400
+});
+
+//Τεστάρω την επιτυχή δημιουργία ενός αντικειμένου spot
+test("POST /spot 200 - successful creation of a spot", async (t) => {
+  // Ελέγχω αν τα δεδομένα του spot που θέλω να δημιουργήσω είναι έγκυρα.
+  // Ελέγχω αν τα δεδομένα του spot που θέλω να δημιουργήσω ταυτίζονται με τα δεδομένα κάποιου ήδη
+  // καταχωρημένου spot.
+  const validatedSpot = await createSpot("Navarinou 45", 24, "Underground", false);
+  t.is(validatedSpot.statusCode, 200); // Οι έλεγχοι μέσα στη createSpot ολοκληρώνονται με επιτυχία 
+  // και μου επιστρέφεται κωδικός επιτυχίας 200
+
+  // Προχωρώ στην δημιουργία του νέου αντικειμένου spot με την κλήση του POST 
+  const response = await t.context.got.post("spot", {
+      json: validatedSpot.spot // Χρήση του επαληθευμένου spot από τη createSpot
+  });
+  t.is(response.statusCode, 200); //Το test πετυχαίνει και μου επιστρέφει κωδικό 200
+});
+
+//Τεστάρω αν το id του spot είναι μη αρνητικός αριθμός
+test("POST /spot 400 for negative id", async (t) => {
+  //Το test αποτυχαίνει διότι το id ισόυται με αρνητικό αριθμό
+  const negative_id = await t.throwsAsync(() =>
+    createSpot("Navarinou 18", -1, "Garage", false)
+  );
+  t.is(negative_id.response.statusCode, 400);//μου επιστρέφει κωδικό αποτυχίας 400
+});
+
+//Τεστάρω αν το address του spot είναι string
+test("POST /spot 400 for invalid address", async (t) => {
+  //Το test αποτυχαίνει διότι το address ισόυται με αριθμό
+  const invalid_address = await t.throwsAsync(() =>
+    createSpot(478, 15, "Garage", false)
+  );
+  t.is(invalid_address.response.statusCode, 400);//μου επιστρέφει κωδικό αποτυχίας 400
+});
+
+//Τεστάρω αν το type του spot είναι "Open" ή "Garage" ή "Underground"
+test("POST /spot 400 for invalid type", async (t) => {
+  //Το test αποτυχαίνει διότι το type ισόυται με τον μη έγκυρο τύπο "SideWalk"
+  const invalid_type = await t.throwsAsync(() =>
+    createSpot("Navarinou 18", 15, "Sidewalk", false)
+  );
+  t.is(invalid_type.response.statusCode, 400);//μου επιστρέφει κωδικό αποτυχίας 400
+});
+
+//Τεστάρω αν το chargerAvailability του spot είναι boolean
+test("POST /spot 400 for invalid chargerAvailability", async (t) => {
+  //Το test αποτυχαίνει διότι το chargerAvailability δεν είναι boolean
+  const invalid_charger = await t.throwsAsync(() =>
+    createSpot("Navarinou 18", 15, "Garage", "Neutral")
+  );
+  t.is(invalid_charger.response.statusCode, 400);//μου επιστρέφει κωδικό αποτυχίας 400
+});
+
+//Τεστάρω τη δημιουργία διπλότυπου spot
+test("POST /spot 400 for duplicate spot", async (t) => {
+  //Το test αποτυχαίνει διότι τα δεδομένα του νέου spot (δηλ. του duplicateSpot) 
+  // ανήκουν σε ένα ήδη καταχωρημένο spot 
+  const duplicateSpot = await t.throwsAsync(() =>
+    createSpot("Navarinou 18", 15, "Garage", false)
+  );
+  t.is(duplicateSpot.response.statusCode, 400);//μου επιστρέφει κωδικό αποτυχίας 400
 });
