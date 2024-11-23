@@ -74,21 +74,21 @@ exports.modifyReservation = function(body,spotId,userId,startTime,duration,date,
       id: 1
     };
   
-    if(typeof date !== 'date'){
+    if(typeof date !== 'string'){
       const error = new Error('Invalid type in query. Must be date');
       error.response = {statusCode: 400};
       reject(error);
       return;
     }
 
-    if(typeof duration !== 'date'){
+    if(typeof duration !== 'string'){
       const error = new Error('Duration must be datetime');
       error.response = {statusCode: 400};
       reject(error);
       return;
     }
 
-    if(typeof startTime !== 'date'){
+    if(typeof startTime !== 'string'){
       const error = new Error('Start time must be datetime');
       error.response = {statusCode: 400};
       reject(error);
