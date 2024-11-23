@@ -73,7 +73,7 @@ test ('PUT /reservation/{id} 400 if query_userId !== body_userId', async (t) => 
 });
 
 test ('PUT /reservation/{id} 400 for invalid id', async (t) => {
-  const {body} = await t.context.got.put('reservation/1?date=2024-11-19&duration=2024-11-19T11%3A00%3A00Z&startTime=2024-11-19T08%3A00%3A00Z&userId=1&spotId=1', {
+  const {body} = await t.context.got.put('reservation/-3?date=2024-11-19&duration=2024-11-19T11%3A00%3A00Z&startTime=2024-11-19T08%3A00%3A00Z&userId=1&spotId=1', {
     json: {
       "date": "2024-11-19",
       "duration": "2024-11-19T11:00:00Z",
@@ -87,7 +87,7 @@ test ('PUT /reservation/{id} 400 for invalid id', async (t) => {
 } );
 
 test ('PUT /reservation/{id} 400 for invalid date', async (t) => {
-  const {body} = await t.context.got.put('reservation/1?date=12&duration=2024-11-19T11%3A00%3A00Z&startTime=2024-11-19T08%3A00%3A00Z&userId=1&spotId=1', {
+  const body = await t.throwsAsync(() =>t.context.got.put('reservation/1?date=2024-11-19&duration=2024-11-19T11%3A00%3A00Z&startTime=2024-11-19T08%3A00%3A00Z&userId=1&spotId=1', {
     json: {
       "date": 12,
       "duration": "2024-11-19T11:00:00Z",
@@ -96,12 +96,12 @@ test ('PUT /reservation/{id} 400 for invalid date', async (t) => {
       "spotId": 1,
       "id": 1
     }
-  });
+  }));
   t.is(body.response.statusCode, 400);
 });
 
 test ('PUT /reservation/{id} 400 for invalid duration', async (t) => {
-  const body = await t.throwAsync(() =>  t.context.got.put('reservation/1?date=2024-11-19&duration=33&startTime=2024-11-19T08%3A00%3A00Z&userId=1&spotId=1', {
+  const body = await t.throwsAsync(() =>  t.context.got.put('reservation/1?date=2024-11-19&duration=2024-11-19T11%3A00%3A00Z&startTime=2024-11-19T08%3A00%3A00Z&userId=1&spotId=1', {
     json: {
       "date": "2024-11-19",
       "duration": 33,
@@ -115,7 +115,7 @@ test ('PUT /reservation/{id} 400 for invalid duration', async (t) => {
 }); 
 
 test ('PUT /reservation/{id} 400 for invalid startTime', async (t) => {
-  const {body} = await t.context.got.put('reservation/1?date=2024-11-19&duration=2024-11-19T11%3A00%3A00Z&startTime=11&userId=1&spotId=1', {
+  const body = await t.throwsAsync(() => t.context.got.put('reservation/1?date=2024-11-19&duration=2024-11-19T11%3A00%3A00Z&startTime=2024-11-19T08%3A00%3A00Z&userId=1&spotId=1', {
     json: {
       "date": "2024-11-19",
       "duration": "2024-11-19T11:00:00Z",
@@ -124,6 +124,6 @@ test ('PUT /reservation/{id} 400 for invalid startTime', async (t) => {
       "spotId": 1,
       "id": 1
     }
-  });
+  }));
   t.is(body.response.statusCode, 400);
 });  
