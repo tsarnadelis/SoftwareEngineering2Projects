@@ -23,7 +23,7 @@ test.after.always((t) => {
 
 //Τεστάρω την συνάρτηση makeReservation για την επιτυχή δημιουργία μιας καινούριας πληρωμής
 test("makePayment function succeeds with valid data", async (t) => {
-    const { statusCode, body } = await makePayment({
+    const body = await makePayment({
       id: 123,
       user: {
         id: 456,
@@ -45,8 +45,7 @@ test("makePayment function succeeds with valid data", async (t) => {
       },
       amount: 150,
     });
-  
-    t.is(statusCode, 200); //το statusCode είναι 200(επιτυχία)
+    
     t.falsy(body); // το body είναι falsy (undefined ή null).
   });
   

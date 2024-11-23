@@ -24,7 +24,7 @@ exports.makePayment = function (body) {
     }
 
     // Επιτυχία: Επιστρέφει μόνο το statusCode
-    resolve({ statusCode: 200 });
+    resolve();
   });
 };
 
