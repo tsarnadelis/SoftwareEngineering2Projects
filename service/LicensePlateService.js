@@ -8,11 +8,24 @@
  * body LicensePlate License plate object to update
  * no response value expected for this operation
  **/
+
+let mockDatabase = {
+  1: { licensePlate: "AKH1314", userId: 1 }, // User 1 has license plate "AKH1314"
+   
+};
 exports.modifyPlate = function(body) {
   return new Promise(function(resolve, reject) {
-    resolve();
+    const { userId, licensePlate } = body;
+
+    const existingPlate = mockDatabase[userId]; // Check if the plate exists in the mock database
+ 
+
+    // Update the existing license plate
+    existingPlate.licensePlate = licensePlate;
+    
+    resolve(existingPlate);  // Return the updated plate object
   });
-}
+};
 
 
 /**
@@ -24,7 +37,16 @@ exports.modifyPlate = function(body) {
  **/
 exports.registerPlate = function(body) {
   return new Promise(function(resolve, reject) {
-    resolve();
+    var examples = {};
+    examples['application/json'] = [ {
+      "licensePlate": "AKH1314",
+      "userId": 1
+    }];
+    if (Object.keys(examples).length > 0) {
+      resolve(examples[Object.keys(examples)[0]]); // Resolve with the example data
+    } else {
+      resolve();
+    }
   });
+   
 }
-

@@ -24,9 +24,31 @@ exports.deleteReservation = function(id) {
  **/
 exports.makeReservation = function(body) {
   return new Promise(function(resolve, reject) {
+    var examples = {};
+    examples['application/json'] = [ {
+  "date" : "2024-11-19",
+  "duration" : "180",
+  "startTime" : "08:00",
+  "userId" : 1,
+  "spotId" : 1,
+  "id" : 1
+}, {
+  "date" : "2024-11-19",
+  "duration" : "180",
+  "startTime" : "08:00",
+  "userId" : 1,
+  "spotId" : 1,
+  "id" : 1
+    } ];
+    if (Object.keys(examples).length > 0) {
+      resolve(examples[Object.keys(examples)[0]]);
+  }
+  else{
     resolve();
+  }
   });
 }
+
 
 
 /**
