@@ -1,4 +1,4 @@
-'use strict';
+ 'use strict';
 
 
 /**
@@ -106,4 +106,3 @@ exports.searchSpot = function(address,type,charger) {
     }
   });
 }
-

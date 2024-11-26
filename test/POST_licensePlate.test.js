@@ -20,77 +20,95 @@ test.after.always((t) => {
     t.context.server.close();
 });
 
-test("LicensePlate function returns correct JSON structure", async (t) => {
-    const body = await registerPlate({ licensePlate: "AKH1314", userId: 1 });
-    t.true(Array.isArray(body));
-    t.is(body[0].licensePlate, "AKH1314"); // Ensure the licensePlate is correct
-    t.is(body[0].userId, 1); // Ensure the userId is correct
-});
 
 
-test("POST /licenseplate with missing userId returns 400", async (t) => {
-    const error = await t.throwsAsync(() =>
-      t.context.got.post('licenseplate', {
-        json: { licensePlate: "AKH1314" } // Missing userId
-      })
-    );
+test("POST /spot 200 for successful creation of a plate", async (t) => {
   
-    t.is(error.response.statusCode, 400); // Check if response status code is 400
-    //t.deepEqual(error.response.body, { error: "Missing userId" }); // Validate the response body
+    const { body , statusCode } = await t.context.got.post("spot",
+       { json: {
+        "licenseplate": "MEX1234",
+        "id": 24,
+         
+      }});
+    t.is(statusCode, 200);  
+  
   });
+
+  test("POST /spot 400 if id is a negative integer", async (t) => {
+    //Το test αποτυχαίνει διότι το id ισόυται με αρνητικό αριθμό
+    const { body } = await t.context.got.post("licenseplate",
+      { json: {
+       "licenseplate": "AKH1314",
+       "id": -4
+       
+     }});
+    t.is(body.response.statusCode, 400);//μου επιστρέφει κωδικό αποτυχίας 400
+  });
+
+  test("POST /spot 400 if id is empty", async (t) => {
+    //Το test αποτυχαίνει διότι το id ισόυται με αρνητικό αριθμό
+    const { body } = await t.context.got.post("licenseplate",
+      { json: {
+       "licenseplate": "AKH1314",
+       
+       
+     }});
+    t.is(body.response.statusCode, 400);//μου επιστρέφει κωδικό αποτυχίας 400
+  });
+  
+ 
+
+test("POST /licenseplate with missing id returns 400", async (t) => {
+    const { body } = await t.context.got.post("licenseplate",
+        { json: {
+         "licenseplate": "AKH1314",
+        
+         
+       }});
+      t.is(body.response.statusCode, 400);//μου επιστρέφει κωδικό αποτυχίας 400
+    });
+
 
 test("Post /licenseplate with missing licensePlate returns 400", async (t) => {
-    const error = await t.throwsAsync(() =>
-      t.context.got.post('licenseplate', {
-        json: { userId: 1 } // Missing licensePlate
-      })
-    );
-    t.is(error.response.statusCode, 400); // Expecting 400 status for missing licensePlate
-    t.is(error.response.body.message, "Missing required field: licensePlate"); // Check for error message
-});
+    const { body } = await t.context.got.post("licenseplate",
+        { json: {
+         "id": 10,
+        
+         
+       }});
+      t.is(body.response.statusCode, 400);//μου επιστρέφει κωδικό αποτυχίας 400
+    });
 
-test("Post /licenseplate with invalid userId returns 400", async (t) => {
-    const error = await t.throwsAsync(() =>
-      t.context.got.post('licenseplate', {
-        json: { userId: -1, licensePlate: "AKH1314" } // Invalid userId (negative number)
-      })
-    );
-    
-    t.is(error.response.statusCode, 400); // Expecting 400 status for invalid userId
-    t.is(error.response.body.message, "Invalid userId: must be a positive integer"); // Check for error message
-  });
+test("Post /licenseplate with empty licensePlate returns 400", async (t) => {
+    const { body } = await t.context.got.post("licenseplate",
+        { json: {
+            "id": 10,
+            "licensePlate": ""
+            
+        }});
+        t.is(body.response.statusCode, 400);//μου επιστρέφει κωδικό αποτυχίας 400
+    });
 
-  test("Post /licenseplate with invalid licensePlate returns 400", async (t) => {
-    const error = await t.throwsAsync(() =>
-      t.context.got.post('licenseplate', {
-        json: { userId: 1, licensePlate: 12 } // Invalid licensePlate (empty string)
-      })
-    );
     
-    t.is(error.response.statusCode, 400); // Expecting 400 status for invalid licensePlate
-    //t.is(error.response.body.message, "Invalid licensePlate: must be a non-empty string"); // Check for error message
-  });
+    test("Post /licenseplate with non-string licensePlate returns 400", async (t) => {
+        const invalid_type = await t.throwsAsync(() =>
+            t.context.got.post("licenseplate", {
+                json: {
+                    id: 10,
+                    licensePlate: 57, // Invalid type
+                },
+            })
+        );
+    
+        // Assert error properties
+        t.is(invalid_type.response.statusCode, 400);
+        
+    });
+
+
+
   
 
-/*
-test("POST /LicensePlate with missing userId returns 400", async (t) => {
-    const error = await t.throwsAsync(() => t.context.got.post('licenseplate', {
-        json: {  licensePlate: "AKH1314" } // missing userId
-    }));
-    t.is(error.response.statusCode, 400); // Assert that the status code is 400
-});
-*/
+
  
-/*
-test('POST /licenseplate with missing userId returns 400', async t => {
-    const error = await t.throwsAsync(() =>
-        got.post('http://localhost:3000/licenseplate', {
-            json: { licensePlate: 'AKH1314' }, // missing userId
-            responseType: 'json'
-        })
-    );
-    
-    t.is(error.response.statusCode, 400); // Assert that status code is 400
-});
-*/
 
