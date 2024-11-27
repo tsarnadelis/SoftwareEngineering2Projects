@@ -22,4 +22,3 @@ module.exports.registerPlate = function registerPlate (req, res, next, body) {
       utils.writeJson(res, response);
     });
 };
-
