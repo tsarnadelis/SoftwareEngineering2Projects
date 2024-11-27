@@ -46,7 +46,7 @@ test("makePayment function succeeds with valid data", async (t) => {
       amount: 150,
     });
     
-    t.falsy(body); // το body είναι falsy (undefined ή null).
+    t.falsy(body); // το body είναι κενό.
   });
   
 
