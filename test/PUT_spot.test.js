@@ -222,7 +222,7 @@ test('PUT /spot 400 missing address from request body', async (t) => {
 test('PUT /spot 400 for invalid request body', async (t) => {
     //Το τεστ αποτυχαίνει δίοτι το request body είναι μη έγκυρο
     const body = await t.throwsAsync(() =>
-      t.context.got.put('spot/3?address="Navarinou%2012"&type=Open&charger=true', {
+      t.context.got.put('spot/3?address=Navarinou%2012&type=Open&charger=true', {
         json: "Spot Modification"
       })
     );
