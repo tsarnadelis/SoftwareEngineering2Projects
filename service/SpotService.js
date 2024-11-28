@@ -213,7 +213,10 @@ exports.modifySpot = function (body, address, type, charger, id) {
 
     // Έλεγχος για διπλότυπη θέση
     const spotExists =
-      existingSpots.id === body.id &&
+    //Δεν ελέγχω τα id του existingSpots και του body διότι θεωρώ εκ των πραγμάτων ότι ισούται μεταξύ τους.
+    // Αυτό συμβαίνει διότι κάνω modify μια ήδη υπάρχουσα θέση , άρα το id δεν αλλάζει κατά το modification.
+    // Αν άλλαζε το id τότε θα έκανα create μια νέα θέση. 
+    // Αντίστοιχος έλεγχος έγινε και στο PUT /reservation καθώς και στο PUT /licensePlate.
       existingSpots.address === body.address &&
       existingSpots.type === body.type &&
       existingSpots.charger === body.charger;

@@ -27,10 +27,11 @@ test('PUT /spot 200 for successful modification of a spot', async (t) => {
     // Σε αυτό το test, οι τιμές των query και των request body parameters ταυτίζονται,
     // επομένως όλοι οι έλεγχοι της modifySpot εκτελούνται με επιτυχία και
     // επιστρέφεται ΚΕΝΟ body
-    const { body, statusCode } = await t.context.got.put('spot/1?address=Naxou%2012&type=Open&charger=false', {
+    const { body, statusCode } = await t.context.got.put('spot/15?address=Naxou%2012&type=Open&charger=false', {
       json: { 
+        //το id αναγκαστικά μένει ίσο με 15 , αφού θέλω να κάνω modify τη dummy θέση στη συνάρτηση modifySpot
         "address": "Naxou 12", 
-        "id": 1, 
+        "id": 15, 
         "type": "Open", 
         "charger": false, // Έγκυρη τιμή boolean
       },
