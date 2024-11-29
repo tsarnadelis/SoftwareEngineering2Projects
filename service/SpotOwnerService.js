@@ -65,6 +65,23 @@ exports.addSpotOwner = function(body) {
       return;
     }
     
+    if (!body.phone) {
+
+      //αν το phone δεν υπάρχει στο request body τότε έχω σφάλμα με κωδικό σφάλματος 400
+      const error = new Error("No phone.");
+      error.response = { statusCode: 400 };
+      reject(error);
+      return;
+    }
+
+    if (!body.spots) {
+
+      //αν το spots δεν υπάρχει στο request body τότε έχω σφάλμα με κωδικό σφάλματος 400
+      const error = new Error("No spots.");
+      error.response = { statusCode: 400 };
+      reject(error);
+      return;
+    }
 
     resolve();
     });

@@ -17,6 +17,7 @@ test.after.always((t) => {
     t.context.server.close();
 });
 
+// Test for successful registration of a spot owner
 test("POST /spotowner 200 for successful registery of a spot owner", async (t) => {
   
     const { body, statusCode } = await t.context.got.post("spotowner", {
@@ -32,7 +33,7 @@ test("POST /spotowner 200 for successful registery of a spot owner", async (t) =
     t.is(statusCode, 200);  
     
   });
-
+// Test for negative ID value
   test("POST /spotowner 400 if id is a negative integer", async (t) => {
     //Το test αποτυχαίνει διότι το id ισόυται με αρνητικό αριθμό
 
@@ -51,7 +52,7 @@ test("POST /spotowner 200 for successful registery of a spot owner", async (t) =
   });
    
  
-
+// Test for missing ID field
 test("POST /spotowner with missing id returns 400", async (t) => {
     const { body } = await t.context.got.post("spotowner",
         { json: {
@@ -64,6 +65,7 @@ test("POST /spotowner with missing id returns 400", async (t) => {
       t.is(body.response.statusCode, 400);//μου επιστρέφει κωδικό αποτυχίας 400
     });
 
+// Test for missing idNumber field
 test("POST /spotowner with missing idNumber returns 400", async (t) => {
     const { body } = await t.context.got.post("spotowner",
         { json: {
@@ -76,7 +78,7 @@ test("POST /spotowner with missing idNumber returns 400", async (t) => {
         t.is(body.response.statusCode, 400);//μου επιστρέφει κωδικό αποτυχίας 400
     });
 
-
+// Test for invalid idNumber type
 test("Post /spotowner with inncorrect idNumber(not being a string) returns 400", async (t) => {
     const invalid_type = await t.throwsAsync(() =>
         t.context.got.post("spotowner", {
@@ -94,7 +96,7 @@ test("Post /spotowner with inncorrect idNumber(not being a string) returns 400",
     t.is(invalid_type.response.statusCode, 400);
     
 });
-
+// Test for missing name field
 test("Post /spotowner with missing name returns 400", async (t) => {
     const { body } = await t.context.got.post("spotowner",
         { json: {
@@ -107,7 +109,7 @@ test("Post /spotowner with missing name returns 400", async (t) => {
         t.is(body.response.statusCode, 400);//μου επιστρέφει κωδικό αποτυχίας 400
     }
 );
-
+// Test for invalid name type
 test("Post /spotowner with inncorrect name(not being a string) returns 400", async (t) => {
     const invalid_type = await t.throwsAsync(() =>
         t.context.got.post("spotowner", {
@@ -126,7 +128,7 @@ t.is(invalid_type.response.statusCode, 400);
 
 });
 
-
+// Test for missing email field
 test("Post /spotowner with missing email returns 400", async (t) => {
     const { body } = await t.context.got.post("spotowner",
         { json: {
@@ -140,6 +142,7 @@ test("Post /spotowner with missing email returns 400", async (t) => {
     }
 );
 
+// Test for invalid email type
 test("Post /spotowner with incorrect email returns 400" , async (t) => {
     const invalid_type = await t.throwsAsync(() =>
         t.context.got.post("spotowner", {

@@ -16,6 +16,7 @@ test.after.always((t) => {
 
 
 test('PUT /spot 404 for creating a licenseplate instead of updating', async (t) => {
+   // Test for attempting to create a new license plate with PUT instead of updating
   const { body }=await t.context.got.put('licenseplate', {
     json: {
         "licenseplate": "DEK1314",
@@ -26,6 +27,7 @@ test('PUT /spot 404 for creating a licenseplate instead of updating', async (t) 
 });
 
 test('PUT /spot 200 for successful modification of a  licenseplate', async (t) => {
+   // Test for successful update of an existing license plate
     const { body, statusCode }=await t.context.got.put('licenseplate', {
         json: {
             "licenseplate": "AKH1315",
@@ -88,6 +90,7 @@ test("Put /licenseplate with missing id returns 400", async (t) => {
 
 
 test("Put /licenseplate with missing licensePlate returns 400", async (t) => {
+  // Test for missing license plate field
   const { body } = await t.context.got.put("licenseplate",
       { json: {
        "id": 10,
@@ -108,6 +111,7 @@ test("Put /licenseplate with empty licensePlate returns 400", async (t) => {
   });
 
   test("Put /licenseplate with non-string licensePlate returns 400", async (t) => {
+    // Test for invalid license plate type (non-string)
     const invalid_type = await t.throwsAsync(() =>
         t.context.got.post("licenseplate", {
             json: {
