@@ -15,7 +15,7 @@ exports.addSpotOwner = function(body) {
     
     var existingSpotOwners = {
       "id":1,
-      "idNumber": 1,
+      "idNumber": "AK1234",
       "name":"John Doe",
       "email":"johhdoe@gmail.com",
       "phone":"1234567890",
@@ -57,7 +57,7 @@ exports.addSpotOwner = function(body) {
     }
     
 
-    if (!body.idNumber || typeof body.licenseplate !== "string") {
+    if (!body.licenseplate || typeof body.licenseplate !== "string") {
       //αν το id έχει μη έγκυρη τιμή τότε έχω σφάλμα με κωδικό σφάλματος 400
       const error = new Error("Invalid userId: must be a positive integer.");
       error.response = { statusCode: 400 };

@@ -23,7 +23,7 @@ test("POST /spotowner 200 for successful registery of a spot owner", async (t) =
     const { body, statusCode } = await t.context.got.post("spotowner", {
       json: {
         "id": 2,
-        "idNumber": "15",
+        "idNumber": "AM3578",
         "name": "kostas",
         "email": "kost@gmail.com",
         "phone": 9876543210,
@@ -41,7 +41,7 @@ test("POST /spotowner 200 for successful registery of a spot owner", async (t) =
       json: {
         
        "id": -4,
-        "idNumber": "15",
+        "idNumber": "AM3578",
         "name": "kostas",
         "email": "kostas@gmail.com",
         "phone": 6986555555,
@@ -56,7 +56,7 @@ test("POST /spotowner 200 for successful registery of a spot owner", async (t) =
 test("POST /spotowner with missing id returns 400", async (t) => {
     const { body } = await t.context.got.post("spotowner",
         { json: {
-         "idNumber": "15",
+         "idNumber": "AM3578",
         "name": "kostas",
         "email": "kostas@gmail.com",
         "phone": 6986555555,
@@ -101,7 +101,7 @@ test("Post /spotowner with missing name returns 400", async (t) => {
     const { body } = await t.context.got.post("spotowner",
         { json: {
          "id": 2,
-         "idNumber": "15",
+         "idNumber": "AM3578",
         "email": "kostas@gmail.com",
         "phone": 6986555555,
         "spots": [] 
@@ -115,7 +115,7 @@ test("Post /spotowner with inncorrect name(not being a string) returns 400", asy
         t.context.got.post("spotowner", {
             json: {
                 id: 10,
-                "idNumber": "15",
+                "idNumber": "AM3578",
                 name: 15,
                 "email": "kostas@gmail.com",
                 "phone": 6986555555,
@@ -133,7 +133,7 @@ test("Post /spotowner with missing email returns 400", async (t) => {
     const { body } = await t.context.got.post("spotowner",
         { json: {
          "id": 2,
-         "idNumber": "15",
+         "idNumber": "AM3578",
          "name": "kostas",
         "phone": 6986555555,
         "spots": [] 
@@ -148,7 +148,7 @@ test("Post /spotowner with incorrect email returns 400" , async (t) => {
         t.context.got.post("spotowner", {
             json: {
                 id: 10,
-                "idNumber": "15",
+                "idNumber": "AM3578",
                 "name": "kostas",
                 email: 15,
                 "phone": 6986555555,
@@ -165,7 +165,7 @@ test("Post /spotowner with missing phone returns 400", async (t) => {
     const { body } = await t.context.got.post("spotowner",
         { json: {
          "id": 2,
-         "idNumber": "15",
+         "idNumber": "AM3578",
          "name": "kostas",
          "email": "kostas@gmail.com",
          "spots": [] 
@@ -180,7 +180,7 @@ test("Post /spotowner with incorrect phone returns 400" , async (t) => {
         t.context.got.post("spotowner", {
             json: {
                 id: 10,
-                "idNumber": "15",
+                "idNumber": "AM3578",
                 "name": "kostas",
                 "email": "kostas@gmail.com",
                 "phone": "6986555555",
@@ -198,7 +198,7 @@ test("Post /spotowner with missing spots returns 400", async (t) => {
     const { body } = await t.context.got.post("spotowner",
         { json: {
          "id": 2,
-         "idNumber": "15",
+         "idNumber": "AM3578",
          "name": "kostas",
          "email": "kostas@gmail.com",
             "phone": 6986555555

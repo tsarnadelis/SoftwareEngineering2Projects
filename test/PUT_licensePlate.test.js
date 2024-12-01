@@ -15,22 +15,22 @@ test.after.always((t) => {
 });
 
 
-test('PUT /spot 404 for creating a licenseplate instead of updating', async (t) => {
+test('PUT /licensePlate 404 for creating a licenseplate instead of updating', async (t) => {
    // Test for attempting to create a new license plate with PUT instead of updating
-  const { body }=await t.context.got.put('licenseplate', {
+  const { body }=await t.context.got.put('licensePlate', {
     json: {
-        "licenseplate": "DEK1314",
+        "licensePlate": "DEK1314",
         "id": 18
     },
 });
   t.is(body.response.statusCode, 404); 
 });
 
-test('PUT /spot 200 for successful modification of a  licenseplate', async (t) => {
+test('PUT / 200 for successful modification of a  licenseplate', async (t) => {
    // Test for successful update of an existing license plate
-    const { body, statusCode }=await t.context.got.put('licenseplate', {
+    const { body, statusCode }=await t.context.got.put('licensePlate', {
         json: {
-            "licenseplate": "AKH1315",
+            "licensePlate": "AKH1315",
             "id": 15
         },
     });
@@ -44,9 +44,9 @@ test('PUT /spot 200 for successful modification of a  licenseplate', async (t) =
 
 test("Put /licenseplate 400 if licenseplate already exists", async (t) => {
   //Το test αποτυχαίνει διότι το licenseplate υπάρχει ήδη
-  const { body } = await t.context.got.put("licenseplate",
+  const { body } = await t.context.got.put("licensePlate",
     { json: {
-     "licenseplate": "AKH1314",
+     "licensePlate": "AKH1314",
      "id": 15
    }});
   t.is(body.response.statusCode, 400);//μου επιστρέφει κωδικό αποτυχίας 400
@@ -56,9 +56,9 @@ test("Put /licenseplate 400 if licenseplate already exists", async (t) => {
 
 test("Put /licenseplate 400 if id is a negative integer", async (t) => {
   //Το test αποτυχαίνει διότι το id ισόυται με αρνητικό αριθμό
-  const { body } = await t.context.got.put("licenseplate",
+  const { body } = await t.context.got.put("licensePlate",
     { json: {
-     "licenseplate": "AKH1314",
+     "licensePlate": "AKH1314",
      "id": -4
      
    }});
@@ -68,9 +68,9 @@ test("Put /licenseplate 400 if id is a negative integer", async (t) => {
 
 test("Put /licenseplate 400 if id is empty", async (t) => {
   //Το test αποτυχαίνει διότι το id ισόυται με αρνητικό αριθμό
-  const { body } = await t.context.got.put("licenseplate",
+  const { body } = await t.context.got.put("licensePlate",
     { json: {
-     "licenseplate": "AKH1314",
+     "licensePlate": "AKH1314",
      "id": ""
      
    }});
@@ -79,9 +79,9 @@ test("Put /licenseplate 400 if id is empty", async (t) => {
 
 
 test("Put /licenseplate with missing id returns 400", async (t) => {
-  const { body } = await t.context.got.put("licenseplate",
+  const { body } = await t.context.got.put("licensePlate",
       { json: {
-       "licenseplate": "AKH1314",
+       "licensePlate": "AKH1314",
       
        
      }});
@@ -91,7 +91,7 @@ test("Put /licenseplate with missing id returns 400", async (t) => {
 
 test("Put /licenseplate with missing licensePlate returns 400", async (t) => {
   // Test for missing license plate field
-  const { body } = await t.context.got.put("licenseplate",
+  const { body } = await t.context.got.put("licensePlate",
       { json: {
        "id": 10,
       
@@ -101,7 +101,7 @@ test("Put /licenseplate with missing licensePlate returns 400", async (t) => {
   });
 
 test("Put /licenseplate with empty licensePlate returns 400", async (t) => {
-  const { body } = await t.context.got.put("licenseplate",
+  const { body } = await t.context.got.put("licensePlate",
       { json: {
           "id": 10,
           "licensePlate": ""
@@ -113,10 +113,10 @@ test("Put /licenseplate with empty licensePlate returns 400", async (t) => {
   test("Put /licenseplate with non-string licensePlate returns 400", async (t) => {
     // Test for invalid license plate type (non-string)
     const invalid_type = await t.throwsAsync(() =>
-        t.context.got.post("licenseplate", {
+        t.context.got.post("licensePlate", {
             json: {
-                id: 10,
-                licensePlate: 57, // Invalid type
+                "id": 10,
+                "licensePlate": 57, // Invalid type
             },
         })
     );
