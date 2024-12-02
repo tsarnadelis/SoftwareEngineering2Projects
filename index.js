@@ -26,7 +26,4 @@ if (NODE_ENV !== "test") {
     });
 }
 
-app.use("/api", routes);
-app.all("/*", (_, res) => res.json({ body: "Welcome to CurbSprings application!\nA reliable partner in urban mobility" }));
-
 module.exports = app;
