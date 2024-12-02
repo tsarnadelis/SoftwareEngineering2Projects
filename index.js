@@ -8,6 +8,10 @@ var serverPort = 8080;
 
 const { NODE_ENV, /*PORT*/ } = process.env; // Uncomment PORT if you want to use it
 
+app.get('/', function(req,res){
+    res.send("Welcome to CurbSprings application\nYour reliable partner in urban mobility");
+});
+
 // swaggerRouter configuration
 var options = {
     routing: {
@@ -25,9 +29,5 @@ if (NODE_ENV !== "test") {
         console.log('Swagger-ui is available on http://localhost:%d/docs', serverPort);
     });
 }
-
-app.get('/', function(req,res){
-    res.send("Welcome to CurbSprings application\nYour reliable partner in urban mobility");
-});
 
 module.exports = app;
