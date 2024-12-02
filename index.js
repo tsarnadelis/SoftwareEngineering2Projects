@@ -11,11 +11,11 @@ const { NODE_ENV, /*PORT*/ } = process.env; // Uncomment PORT if you want to use
 // Create an Express app
 var app = express();
 
-// 1. Define your custom routes (like root route) before initializing oas3-tools
-app.get('/', function(req, res) {
-    res.send("Welcome to CurbSprings application\nYour reliable partner in urban mobility");
-});
-
+// // 1. Define your custom routes (like root route) before initializing oas3-tools
+// app.get('/', function(req, res) {
+//     res.send("Welcome to CurbSprings application\nYour reliable partner in urban mobility");
+// });
+app.all("/*", (_, res) => res.json({ body: "Welcome to CurbSprings application\nYour reliable partner in urban mobility" }));
 // swaggerRouter configuration
 var options = {
     routing: {
