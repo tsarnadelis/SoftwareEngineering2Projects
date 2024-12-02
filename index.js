@@ -26,4 +26,8 @@ if (NODE_ENV !== "test") {
     });
 }
 
+app.get('/', function(req,res){
+    res.send("Welcome to CurbSprings application\nYour reliable partner in urban mobility");
+});
+
 module.exports = app;
