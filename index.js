@@ -2,17 +2,16 @@
 
 var path = require('path');
 var http = require('http');
-
+var express = require('express');
 var oas3Tools = require('oas3-tools');
 var serverPort = 8080;
 
 const { NODE_ENV, /*PORT*/ } = process.env; // Uncomment PORT if you want to use it
 
-// Initialize the Express app first
-var express = require('express');
+// Create an Express app
 var app = express();
 
-// 1. Define custom routes (e.g., root) before Swagger middleware
+// 1. Define your custom routes (like root route) before initializing oas3-tools
 app.get('/', function(req, res) {
     res.send("Welcome to CurbSprings application\nYour reliable partner in urban mobility");
 });
