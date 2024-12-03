@@ -41,7 +41,7 @@ exports.modifyPlate = function(body) {
     // }
     
 
-    if (!body.id || body.id < 0) {
+    if (!Number.isInteger(body.id) || body.id < 0) {
       //αν το id έχει μη έγκυρη τιμή τότε έχω σφάλμα με κωδικό σφάλματος 400
       const error = new Error("Invalid id: must be a positive integer.");
       error.response = { statusCode: 400 };
@@ -102,7 +102,7 @@ exports.registerPlate = function(body) {
     };
 
     
-    if (!body.id || body.id < 0) {
+    if (!Number.isInteger(body.id) || body.id < 0) {
       //αν το id έχει μη έγκυρη τιμή τότε έχω σφάλμα με κωδικό σφάλματος 400
       const error = new Error("Invalid id: must be a positive integer.");
       error.response = { statusCode: 400 };
