@@ -30,7 +30,7 @@ test("POST /licenseplate 200 for successful creation of a plate", async (t) => {
         "id": 24,
          
       }});
-    t.is(statusCode, 200);  
+    t.is(statusCode, 200);  //μου επιστρέφει κωδικό επιτυχίας 200 
   
   });
 
@@ -104,7 +104,6 @@ test("Post /licenseplate with empty licensePlate returns 400", async (t) => {
             })
         );
     
-        // Assert error properties
-        t.is(invalid_type.response.statusCode, 400);
+        t.is(invalid_type.response.statusCode, 400);//μου επιστρέφει κωδικό αποτυχίας 400
         
     });

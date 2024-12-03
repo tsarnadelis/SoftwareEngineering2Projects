@@ -92,8 +92,7 @@ test("Post /spotowner with inncorrect idNumber(not being a string) returns 400",
                 }
             })
         );
-    // Assert error properties
-    t.is(invalid_type.response.statusCode, 400);
+    t.is(invalid_type.response.statusCode, 400);//μου επιστρέφει κωδικό αποτυχίας 400
     
 });
 // Test for missing name field
@@ -123,8 +122,8 @@ test("Post /spotowner with inncorrect name(not being a string) returns 400", asy
             }
         })
     );
-// Assert error properties
-t.is(invalid_type.response.statusCode, 400);
+
+t.is(invalid_type.response.statusCode, 400);//μου επιστρέφει κωδικό αποτυχίας 400
 
 });
 
@@ -156,11 +155,12 @@ test("Post /spotowner with incorrect email returns 400" , async (t) => {
             }
         })
     );
-// Assert error properties 
-t.is(invalid_type.response.statusCode, 400);
+
+t.is(invalid_type.response.statusCode, 400);//μου επιστρέφει κωδικό αποτυχίας 400
 
 });
 
+// Test for missing phone field
 test("Post /spotowner with missing phone returns 400", async (t) => {
     const { body } = await t.context.got.post("spotowner",
         { json: {
@@ -174,7 +174,7 @@ test("Post /spotowner with missing phone returns 400", async (t) => {
     }
 );
 
- 
+// Test for invalid phone type   
 test("Post /spotowner with incorrect phone returns 400" , async (t) => {
     const invalid_type = await t.throwsAsync(() =>
         t.context.got.post("spotowner", {
@@ -188,12 +188,12 @@ test("Post /spotowner with incorrect phone returns 400" , async (t) => {
             }
         })
     );
-// Assert error properties 
-t.is(invalid_type.response.statusCode, 400);
+ 
+t.is(invalid_type.response.statusCode, 400);//μου επιστρέφει κωδικό αποτυχίας 400
 
 });
 
-
+// Test for the missing spots of spotowner
 test("Post /spotowner with missing spots returns 400", async (t) => {
     const { body } = await t.context.got.post("spotowner",
         { json: {

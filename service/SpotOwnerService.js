@@ -12,14 +12,14 @@
 
 exports.addSpotOwner = function(body) {
   return new Promise((resolve, reject) =>{
-    
+    //SpotOwner = Ιδιοκτήτης θέσεων πάρκινγκ
     var existingSpotOwners = {
-      "id":1,
-      "idNumber": "AK1234",
-      "name":"John Doe",
-      "email":"johhdoe@gmail.com",
-      "phone":"1234567890",
-      "spots":[]
+      "id":1,  // το id του ιδιοκτήτη θέσεων
+      "idNumber": "AK1234", // ο αριθμός ταυτότητας του ιδιοκτήτη θέσεων
+      "name":"John Doe", // ο ονοματεπώνυμο του ιδιοκτήτη  
+      "email":"johhdoe@gmail.com", // το email του ιδιοκτήτη
+      "phone":"1234567890",// το τηλέφωνο του ιδιοκτήτη
+      "spots":[] // οι θέσεις του ιδιοκτήτη
     };
      
 
@@ -32,7 +32,7 @@ exports.addSpotOwner = function(body) {
     }
 
     if (!body.idNumber || typeof body.idNumber !== "string") {
-      //αν το id έχει μη έγκυρη τιμή τότε έχω σφάλμα με κωδικό σφάλματος 400
+      //αν το idNumber έχει μη έγκυρη τιμή τότε έχω σφάλμα με κωδικό σφάλματος 400
       const error = new Error("Invalid idNumber: must be a string.");
       error.response = { statusCode: 400 };
       reject(error);
@@ -51,15 +51,6 @@ exports.addSpotOwner = function(body) {
 
       //αν το email έχει μη έγκυρη τιμή τότε έχω σφάλμα με κωδικό σφάλματος 400
       const error = new Error("Invalid email: must be a string.");
-      error.response = { statusCode: 400 };
-      reject(error);
-      return;
-    }
-    
-
-    if (!body.licenseplate || typeof body.licenseplate !== "string") {
-      //αν το id έχει μη έγκυρη τιμή τότε έχω σφάλμα με κωδικό σφάλματος 400
-      const error = new Error("Invalid userId: must be a positive integer.");
       error.response = { statusCode: 400 };
       reject(error);
       return;
