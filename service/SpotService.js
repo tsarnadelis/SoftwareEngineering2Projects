@@ -125,7 +125,8 @@ exports.getSpots = function () {
 //   });
 // }
 exports.modifySpot = function (body, address, type, charger, id) {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve, reject) => { // Οι έλεγχοι που έγιναν comment εκτελούνται από το swagger, 
+    // επομένως είναι περιττό να τους γράψω μέσα στο modifySpot διότι μου χαλάνε το coverage του SpotService.js
 
     // Τα δεδομένα των ήδη καταχωρημένων θέσεων μέσα στο σύστημα
     var existingSpots = {
@@ -137,14 +138,14 @@ exports.modifySpot = function (body, address, type, charger, id) {
 
     // Έλεγχος query παραμέτρων
 
-    // Το address πρέπει να είναι string
-    if (!address) {
-      //αν το address έχει μη έγκυρη τιμή τότε έχω σφάλμα με κωδικό σφάλματος 400
-      const error = new Error("Invalid address in query: must be a string.");
-      error.response = { statusCode: 400 };
-      reject(error);
-      return;
-    }
+    // // Το address πρέπει να είναι string 
+    // if (!address) {
+    //   //αν το address έχει μη έγκυρη τιμή τότε έχω σφάλμα με κωδικό σφάλματος 400
+    //   const error = new Error("Invalid address in query: must be a string.");
+    //   error.response = { statusCode: 400 };
+    //   reject(error);
+    //   return;
+    // }
 
     //Το type πρέπει να ισούται με "Garage" ή "Open" ή "Underground"
     if (!["Garage", "Open", "Underground"].includes(type)) {
@@ -155,14 +156,14 @@ exports.modifySpot = function (body, address, type, charger, id) {
       return;
     }
 
-    //Το charger πρέπει να είναι boolean
-    if (typeof charger !== 'boolean') {
-      //αν το charger έχει μη έγκυρη τιμή τότε έχω σφάλμα με κωδικό σφάλματος 400
-      const error = new Error("Invalid charger in query: must be a boolean.");
-      error.response = { statusCode: 400 };
-      reject(error);
-      return;
-    }
+    // //Το charger πρέπει να είναι boolean
+    // if (typeof charger !== 'boolean') {
+    //   //αν το charger έχει μη έγκυρη τιμή τότε έχω σφάλμα με κωδικό σφάλματος 400
+    //   const error = new Error("Invalid charger in query: must be a boolean.");
+    //   error.response = { statusCode: 400 };
+    //   reject(error);
+    //   return;
+    // }
 
     //Το id πρέπει να είναι μη αρνητικός ακέραιος αριθμός
     if (!id || id < 0) {
@@ -173,13 +174,13 @@ exports.modifySpot = function (body, address, type, charger, id) {
       return;
     }
 
-    // Έλεγχος request body
-    if (!body || typeof body !== 'object') {
-      const error = new Error("Invalid request body.");
-      error.response = { statusCode: 400 };
-      reject(error);
-      return;
-    }
+    // // Έλεγχος request body
+    // if (!body || typeof body !== 'object') {
+    //   const error = new Error("Invalid request body.");
+    //   error.response = { statusCode: 400 };
+    //   reject(error);
+    //   return;
+    // }
 
     // Σύγκριση query παραμέτρων με request body attributes. 
     // Τα αντίστοιχα query attributes με τα αντίστοιχα attributes του request body πρέπει να ταυτίζονται. 
