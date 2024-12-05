@@ -25,30 +25,78 @@ exports.deleteReservation = function(id) {
 exports.makeReservation = function(body) {
   return new Promise(function(resolve, reject) {
     var examples = {};
+    //Παραθέτω κάποια dummy δεδομένα που αντιστοιχούν σε καταχωρημένες κρατήσεις μέσα στο σύστημα
     examples['application/json'] = [ {
-      "date" : "2024-11-19",
-      "duration" : "180",
-      "startTime" : "08:00",
-      "userId" : 1,
-      "spotId" : 1,
-      "id" : 1
+  "date" : "2024-11-19",
+  "duration" : "2024-11-19T11:00:00Z",
+  "startTime" : "2024-11-19T08:00:00Z",
+  "userId" : 1,
+  "spotId" : 1,
+  "id" : 1
 }, {
-      "date" : "2024-11-19",
-      "duration" : "180",
-      "startTime" : "08:00",
-      "userId" : 1,
-      "spotId" : 1,
-      "id" : 1
+  "date" : "2024-11-19",
+  "duration" : "2024-11-19T11:00:00Z",
+  "startTime" : "2024-11-19T08:00:00Z",
+  "userId" : 1,
+  "spotId" : 1,
+  "id" : 1
     } ];
-  if (Object.keys(examples).length > 0) {
-    resolve(examples[Object.keys(examples)[0]]);
-   }
-  else{
+
+    // Έλεγχος αν υπάρχει ήδη κράτηση με τα ίδια στοιχεία
+    // Δηλαδή, γίνεται έλεγχος για διπλότυπη κράτηση
+    const duplicate = examples['application/json'].some(reservation =>
+      reservation.id === body.id &&
+      reservation.date === body.date &&
+      reservation.startTime === body.startTime &&
+      reservation.duration === body.duration &&
+      reservation.spotId === body.spotId &&
+      reservation.userId === body.userId
+    );
+
+    //Αν βρεθεί διπλότυπη κράτηση
+    if (duplicate) {
+      const error = new Error("Duplicate reservation detected.");
+      error.response = { statusCode: 400 };
+      reject(error);
+      return;
+    }
+
+    if (!body.userId || body.userId < 0) {
+      //αν το userId δεν υπάρχει στο request body ή αν είναι αρνητικός αριθμός τότε έχω σφάλμα με κωδικό σφάλματος 400
+      const error = new Error("Invalid userId: must be a integer.");
+      error.response = { statusCode: 400 };
+      reject(error);
+      return;
+    }
+
+    if (!body.spotId || body.spotId < 0) {
+      //αν το spotId δεν υπάρχει στο request body ή αν είναι αρνητικός αριθμός τότε έχω σφάλμα με κωδικό σφάλματος 400
+      const error = new Error("Invalid spotId: must be a integer.");
+      error.response = { statusCode: 400 };
+      reject(error);
+      return;
+    }
+
+    if (!body.duration) {
+      //αν το duration δεν υπάρχει στο request body τότε έχω σφάλμα με κωδικό σφάλματος 400
+      const error = new Error("Duration is missing.");
+      error.response = { statusCode: 400 };
+      reject(error);
+      return;
+    }
+
+    if (!body.startTime) {
+      //αν το startTime δεν υπάρχει στο request body τότε έχω σφάλμα με κωδικό σφάλματος 400
+      const error = new Error("Start Time is missing.");
+      error.response = { statusCode: 400 };
+      reject(error);
+      return;
+    }
+    // Η κράτηση έχει περάσει όλους τους ελέγχους και μπορώ να την προσθέσω
+    // Δεν το κάνω, καθώς η συνάρτηση είναι dummy
     resolve();
-  }
   });
 }
-
 
 
 /**
