@@ -262,25 +262,28 @@ exports.removeSpot = function (id) {
  * charger Boolean 
  * returns List
  **/
-exports.searchSpot = function (address, type, charger) {
-  return new Promise(function (resolve, reject) {
+exports.searchSpot = function(address,type,charger) {
+  return new Promise(function(resolve, /*reject*/) { // remove unused reject
     var examples = {};
-    examples['application/json'] = [{
-      "address": "address",
-      "id": 0,
-      "type": "type",
-      "chargerAvailability": true
-    }, {
-      "address": "address",
-      "id": 0,
-      "type": "type",
-      "chargerAvailability": true
-    }];
-    if (Object.keys(examples).length > 0) {
+    examples['application/json'] = [ {
+  "address" : "address",
+  "id" : 0,
+  "type" : "type",
+  "chargerAvailability" : true
+}, {
+  "address" : "address",
+  "id" : 0,
+  "type" : "type",
+  "chargerAvailability" : true
+} ];
+    if (address === "address" || type === "type" || charger === true) {
       resolve(examples[Object.keys(examples)[0]]);
-    } else {
-      resolve();
+    }
+    else {
+      resolve({
+        status: 404,
+        message: "No matching parking spots found.",
+      })
     }
   });
 }
-
