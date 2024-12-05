@@ -17,6 +17,17 @@ jobs:
                env: 
                    BASE_URL: https://softwareengineering2projects.onrender.com/docs/
              
-             
+    cd:
+        runs-on: ubuntu-latest
+        needs: ci
+        if: github.ref == 'refs/head/main'
+        steps:
+        - name: Deploy to Render
+          uses: johnbeynon/render-deploy-action@v0.0.8
+          with:
+              service-id: ${{ secrets.RENDER_SERVICE_ID }}
+              api-key: ${{ secrets.RENDER_API_KEY }}
+        
+        
         
         
