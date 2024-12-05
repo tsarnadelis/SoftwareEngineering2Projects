@@ -110,4 +110,3 @@ exports.searchSpot = function(address,type,charger) {
     }
   });
 }
-
