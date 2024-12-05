@@ -12,6 +12,10 @@ jobs:
                run: npm install
              - name: Run test
                run: npm test
+             - name: Run Cypress tests for Swagger UI
+               run: npm run cypress:run 
+               env: 
+                   BASE_URL: https://softwareengineering2projects.onrender.com/docs/
              
              
         
