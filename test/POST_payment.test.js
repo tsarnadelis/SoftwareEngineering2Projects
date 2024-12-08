@@ -48,7 +48,8 @@ test("makePayment function succeeds with valid data", async (t) => {
     
     t.falsy(body); // το body είναι κενό.
   });
-  
+
+//Happy path για το payment
 test("POST /payment succesfull", async (t) => {
   const {body, statusCode} = await  t.context.got.post('payment', {
     json : {
