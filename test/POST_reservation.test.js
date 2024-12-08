@@ -30,6 +30,20 @@ test("makeReservation function checks for a duplicate reservation", async (t) =>
       t.is(body.response.statusCode, 400);
 });
 
+test("POST /reservation with correct data returns code 200", async (t) => {
+    const { body, statusCode } = await t.context.got.post('reservation', {
+        json: {
+            date: "2024-11-19",
+            startTime: "2024-11-19T08:00:00Z",
+            duration: "2024-11-19T11:00:00Z",
+            spotId: 1,
+            id: 1,
+            userId: 1
+        }
+    });
+    t.is(statusCode, 200);
+});
+
 //Τεστάρω αν δεδομένα της κράτησης είναι έγκυρα
 test("POST /reservation with invalid data returns 400", async (t) => {
     // Σε αυτό το τεστ , τα δεδομένα της κράτησης είναι μη έγκυρα.
