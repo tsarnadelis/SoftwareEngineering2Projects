@@ -16,14 +16,14 @@
   "license": "Unlicense",
   "private": true,
   "dependencies": {
-    "connect": "^3.2.0",
-    "js-yaml": "^3.3.0",
+    "connect": "^3.7.0",
+    "js-yaml": "^3.14.1",
     "oas3-tools": "^2.2.3"
   },
   "devDependencies": {
     "ava": "^5.3.1",
     "c8": "^8.0.1",
-    "cypress": "^13.16.0",
-    "got": "^11.8.3"
+    "cypress": "^13.16.1",
+    "got": "^11.8.6"
   }
 }
