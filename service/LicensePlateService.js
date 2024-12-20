@@ -17,20 +17,20 @@ exports.modifyPlate = function(body) {
       "id": 15, 
     };
 
-    /**If the licensePlate is not present in the request body or is an empty string, return an error with status code 400 **/
-    if (!body.licensePlate || body.licensePlate === "" ) {
-      const error = new Error("license Plate does not exist");
-      error.response = { statusCode: 400 };
-      reject(error);
-      return;
-    }
+    const validations = [
+      { key: 'licensePlate', rule: (value) => value && value !== "", errorMessage: "license Plate does not exist" },
+      { key: 'id', rule: (value) => Number.isInteger(value) && value >= 0, errorMessage: "Invalid id: must be a positive integer." }
+    ];
 
-    /**If the id has an invalid value, return an error with status code 400 **/
-    if (!Number.isInteger(body.id) || body.id < 0) {
-      const error = new Error("Invalid id: must be a positive integer.");
-      error.response = { statusCode: 400 };
-      reject(error);
-      return;
+    // Loop through validations
+    for (const { key, rule, errorMessage } of validations) {
+      const value = body[key];
+      if (!rule(value)) {
+        const error = new Error(errorMessage);
+        error.response = { statusCode: 400 };
+        reject(error); // Reject with the appropriate error message and status code
+        return;
+      }
     }
 
     /** Check if the provided id and licensePlate match exactly with any existing registration. **/
@@ -56,7 +56,7 @@ exports.modifyPlate = function(body) {
     /** Handle non-existent ID (the plate does not exist in the system).Return error code 404. **/
     const isNonExistent = existingPlates.id !== body.id;
 
-    /** Implement the check */
+    /*Implement check*/
     if (isNonExistent) {
         const error = new Error("License plate doesn't exist.");
         error.response = { statusCode: 404 }; 
@@ -77,24 +77,25 @@ exports.modifyPlate = function(body) {
  * no response value expected for this operation
  **/
 exports.registerPlate = function(body) {
-  return new Promise((resolve, reject) => { 
+  return new Promise((resolve, reject) => {
+    // Define validation rules for each field
+    const validations = [
+      { key: 'id', rule: (value) => Number.isInteger(value) && value >= 0, errorMessage: 'Invalid id: must be a positive integer.' },
+      { key: 'licensePlate', rule: (value) => value && value !== "", errorMessage: 'licenseplate does not exist' }
+    ];
 
-    /** If the id has an invalid value, return an error with status code 400 **/
-    if (!Number.isInteger(body.id) || body.id < 0) {
-      const error = new Error("Invalid id: must be a positive integer.");
-      error.response = { statusCode: 400 };
-      reject(error);
-      return;
+    // Loop through validations
+    for (const { key, rule, errorMessage } of validations) {
+      const value = body[key];
+      if (!rule(value)) {
+        const error = new Error(errorMessage);
+        error.response = { statusCode: 400 };
+        reject(error); // Reject with the appropriate error message and status code
+        return;
+      }
     }
-     
-    /** If the licensePlate is not present in the request body or is an empty string, return an error with status code 400 **/
-    if (!body.licensePlate || body.licensePlate === "") {
-      const error = new Error("licenseplate does not exist");
-      error.response = { statusCode: 400 };
-      reject(error);
-      return;
-    }
-  
-    resolve();
-    });
+
+    resolve(); // All validations passed
+  });
 };
+
