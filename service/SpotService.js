@@ -21,6 +21,7 @@ exports.createSpot = function (body) {
 
     // Το address πρέπει να είναι string. Αν το address έχει μη έγκυρη τιμή τότε έχω σφάλμα με κωδικό σφάλματος 400
     if (!body.address) {
+
       const error = new Error("Invalid address: must be a string.");
       error.response = { statusCode: 400 };
       reject(error);
@@ -29,6 +30,7 @@ exports.createSpot = function (body) {
     
     //Το id πρέπει να είναι μη αρνητικός ακέραιος αριθμός. Αν έχει μη έγκυρη τιμή τότε έχω σφάλμα με κωδικό σφάλματος 400
     if (!body.id || body.id < 0) {
+
       const error = new Error("Invalid id: must be a positive integer.");
       error.response = { statusCode: 400 };
       reject(error);
@@ -37,6 +39,7 @@ exports.createSpot = function (body) {
 
     //Το type πρέπει να ισούται με "Garage" ή "Open" ή "Underground". Διαφορετικά, έχω σφάλμα με κωδικό σφάλματος 400
     if (!["Garage", "Open", "Underground"].includes(body.type)) {
+
       const error = new Error("Invalid type: must be one of 'Garage', 'Open', or 'Underground'.");
       error.response = { statusCode: 400 };
       reject(error);
@@ -45,6 +48,7 @@ exports.createSpot = function (body) {
 
     //Το chargerAvailability πρέπει να είναι boolean. Διαφορετικά, έχω σφάλμα με κωδικό σφάλματος 400
     if (typeof body.chargerAvailability !== 'boolean') {
+
       const error = new Error("Invalid chargerAvailability: must be a boolean.");
       error.response = { statusCode: 400 };
       reject(error);
@@ -61,6 +65,7 @@ exports.createSpot = function (body) {
 
     //Αν βρεθεί διπλότυπη θέση τότε έχω σφάλμα με κωδικό σφάλματος 400           
     if (spotExists) {
+
       const error = new Error("Spot already exists: a spot with the same attributes already exists.");
       error.response = { statusCode: 400 };
       reject(error);
@@ -124,6 +129,7 @@ exports.modifySpot = function (body, address, type, charger, id) {
 
     //Το type πρέπει να ισούται με "Garage" ή "Open" ή "Underground". Διαφορετικά, έχω σφάλμα με κωδικό σφάλματος 400
     if (!["Garage", "Open", "Underground"].includes(type)) {
+
       const error = new Error("Invalid type in query: must be one of 'Garage', 'Open', or 'Underground'.");
       error.response = { statusCode: 400 };
       reject(error);
@@ -132,6 +138,7 @@ exports.modifySpot = function (body, address, type, charger, id) {
 
     //Το id πρέπει να είναι μη αρνητικός ακέραιος αριθμός. Διαφορετικά, έχω σφάλμα με κωδικό σφάλματος 400
     if (!id || id < 0) {
+
       const error = new Error("Invalid id in query: must be a positive integer.");
       error.response = { statusCode: 400 };
       reject(error);
@@ -141,6 +148,7 @@ exports.modifySpot = function (body, address, type, charger, id) {
     // Σύγκριση query παραμέτρων με request body attributes. 
     // Τα αντίστοιχα query attributes με τα αντίστοιχα attributes του request body πρέπει να ταυτίζονται. 
     if (body.address !== address) {
+
       const error = new Error("Address mismatch between query and body.");
       error.response = { statusCode: 400 };
       reject(error);
@@ -148,6 +156,7 @@ exports.modifySpot = function (body, address, type, charger, id) {
     }
 
     if (body.type !== type) {
+
       const error = new Error("Type mismatch between query and body.");
       error.response = { statusCode: 400 };
       reject(error);
@@ -155,6 +164,7 @@ exports.modifySpot = function (body, address, type, charger, id) {
     }
 
     if (body.charger !== charger) {
+
       const error = new Error("Charger mismatch between query and body.");
       error.response = { statusCode: 400 };
       reject(error);
@@ -162,6 +172,7 @@ exports.modifySpot = function (body, address, type, charger, id) {
     }
 
     if (body.id !== id) {
+
       const error = new Error("ID mismatch between query and body.");
       error.response = { statusCode: 400 };
       reject(error);
@@ -180,6 +191,7 @@ exports.modifySpot = function (body, address, type, charger, id) {
     existingSpots.charger === body.charger;
 
     if (spotExists) {
+      
       const error = new Error("Spot already exists: a spot with the same attributes already exists.");
       error.response = { statusCode: 400 };
       reject(error);
