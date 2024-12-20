@@ -11,54 +11,47 @@
 exports.createSpot = function (body) {
   return new Promise((resolve, reject) => {
 
-    // Τα δεδομένα των ήδη καταχωρημένων θέσεων μέσα στο σύστημα
-    var existingSpots = {
+    var existingSpots = { // Τα δεδομένα των ήδη καταχωρημένων θέσεων μέσα στο σύστημα
         "address": "Navarinou 18",
         "id": 15,
         "type": "Garage",
         "chargerAvailability": false
       };
 
-    // Το address πρέπει να είναι string. Αν το address έχει μη έγκυρη τιμή τότε έχω σφάλμα με κωδικό σφάλματος 400
-    if (!body.address) {
+    if (!body.address) { // Το address πρέπει να είναι string. Διαφορετικά έχω σφάλμα με κωδικό σφάλματος 400
       const error = new Error("Invalid address: must be a string.");
       error.response = { statusCode: 400 };
       reject(error);
       return;
     }
     
-    //Το id πρέπει να είναι μη αρνητικός ακέραιος αριθμός. Αν έχει μη έγκυρη τιμή τότε έχω σφάλμα με κωδικό σφάλματος 400
-    if (!body.id || body.id < 0) {
+    if (!body.id || body.id < 0) { //Το id πρέπει να είναι μη αρνητικός ακέραιος αριθμός. Διαφορετικά, έχω κωδικό σφάλματος 400
       const error = new Error("Invalid id: must be a positive integer.");
       error.response = { statusCode: 400 };
       reject(error);
       return;
     }
 
-    //Το type πρέπει να ισούται με "Garage" ή "Open" ή "Underground". Διαφορετικά, έχω σφάλμα με κωδικό σφάλματος 400
-    if (!["Garage", "Open", "Underground"].includes(body.type)) {
+    if (!["Garage", "Open", "Underground"].includes(body.type)) {//Το type πρέπει να ισούται με "Garage" ή "Open" ή "Underground"
       const error = new Error("Invalid type: must be one of 'Garage', 'Open', or 'Underground'.");
       error.response = { statusCode: 400 };
       reject(error);
       return;
     }
 
-    //Το chargerAvailability πρέπει να είναι boolean. Διαφορετικά, έχω σφάλμα με κωδικό σφάλματος 400
-    if (typeof body.chargerAvailability !== 'boolean') {
+    if (typeof body.chargerAvailability !== 'boolean') {  //Το chargerAvailability πρέπει να είναι boolean.
       const error = new Error("Invalid chargerAvailability: must be a boolean.");
       error.response = { statusCode: 400 };
       reject(error);
       return;
     }
 
-    // Έλεγχος αν υπάρχει ήδη το spot , δηλαδή γίνεται έλεγχος για διπλότυπη θέση
-    const spotExists = existingSpots.id === body.id &&
+    const spotExists = existingSpots.id === body.id &&  // Έλεγχος αν υπάρχει ήδη το spot. (Έλεγχος για διπλότυπη θέση)
                existingSpots.address === body.address &&
                existingSpots.type === body.type &&
                existingSpots.chargerAvailability === body.chargerAvailability;
-
-    //Αν βρεθεί διπλότυπη θέση τότε έχω σφάλμα με κωδικό σφάλματος 400           
-    if (spotExists) {
+          
+    if (spotExists) { //Αν βρεθεί διπλότυπη θέση τότε έχω σφάλμα με κωδικό σφάλματος 400 
       const error = new Error("Spot already exists: a spot with the same attributes already exists.");
       error.response = { statusCode: 400 };
       reject(error);
@@ -112,65 +105,61 @@ exports.getSpots = function () {
  **/
 exports.modifySpot = function (body, address, type, charger, id) {
   return new Promise((resolve, reject) => {
-    // Τα δεδομένα των ήδη καταχωρημένων θέσεων μέσα στο σύστημα
-    var existingSpots = {
+    
+    var existingSpots = { // Τα δεδομένα των ήδη καταχωρημένων θέσεων μέσα στο σύστημα
       address: "Navarinou 18",
       id: 15,
       type: "Garage",
       charger: false,
     };
 
-    //Το type πρέπει να ισούται με "Garage" ή "Open" ή "Underground". Διαφορετικά, έχω σφάλμα με κωδικό σφάλματος 400
-    if (!["Garage", "Open", "Underground"].includes(type)) {
+    if (!["Garage", "Open", "Underground"].includes(type)) {//Το type πρέπει να ισούται με "Garage" ή "Open" ή "Underground"
       const error = new Error("Invalid type in query: must be one of 'Garage', 'Open', or 'Underground'.");
       error.response = { statusCode: 400 };
       reject(error);
       return;
     }
 
-    //Το id πρέπει να είναι μη αρνητικός ακέραιος αριθμός. Διαφορετικά, έχω σφάλμα με κωδικό σφάλματος 400
-    if (!id || id < 0) {
+    if (!id || id < 0) {    //Το id πρέπει να είναι μη αρνητικός ακέραιος αριθμός
       const error = new Error("Invalid id in query: must be a positive integer.");
       error.response = { statusCode: 400 };
       reject(error);
       return;
     }
 
-    // Σύγκριση query παραμέτρων με request body attributes.  
-    if (body.address !== address) {
+    if (body.address !== address) { // Σύγκριση query παραμέτρου με το αντίστοιχο request body attribute.
       const error = new Error("Address mismatch between query and body.");
       error.response = { statusCode: 400 };
       reject(error);
       return;
     }
 
-    if (body.type !== type) {
+    if (body.type !== type) { // Σύγκριση query παραμέτρου με το αντίστοιχο request body attribute.
       const error = new Error("Type mismatch between query and body.");
       error.response = { statusCode: 400 };
       reject(error);
       return;
     }
 
-    if (body.charger !== charger) {
+    if (body.charger !== charger) { // Σύγκριση query παραμέτρου με το αντίστοιχο request body attribute.
       const error = new Error("Charger mismatch between query and body.");
       error.response = { statusCode: 400 };
       reject(error);
       return;
     }
 
-    if (body.id !== id) {
+    if (body.id !== id) { // Σύγκριση query παραμέτρου με το αντίστοιχο request body attribute.
       const error = new Error("ID mismatch between query and body.");
       error.response = { statusCode: 400 };
       reject(error);
       return;
     }
 
-    // Έλεγχος αν τα τροποποιημένα στοιχεία της θέσης ταυτίζονται με τα "παλιά" στοιχεία της θέσης. 
-    const spotExists = existingSpots.address === body.address && 
-    existingSpots.type === body.type &&
+    const spotExists = existingSpots.address === body.address &&
+    existingSpots.type === body.type && 
     existingSpots.charger === body.charger;
 
-    if (spotExists) {
+    if (spotExists) { //Έλεγχος αν τα τροποποιημένα στοιχεία της θέσης ταυτίζονται με τα "παλιά" της στοιχεία 
       const error = new Error("Spot already exists: a spot with the same attributes already exists.");
       error.response = { statusCode: 400 };
       reject(error);
