@@ -71,7 +71,9 @@ exports.createSpot = function (body) {
  **/
 exports.getSpots = function () {
   return new Promise(function (resolve, reject) {
+
     var examples = {};
+
     examples['application/json'] = [{
       "address": "address",
       "id": 0,
@@ -83,9 +85,11 @@ exports.getSpots = function () {
       "type": "type",
       "chargerAvailability": true
     }];
+
     if (Object.keys(examples).length > 0) {
       resolve(examples[Object.keys(examples)[0]]);
     } else {
+
       resolve();
     }
   });
@@ -105,7 +109,7 @@ exports.getSpots = function () {
  **/
 exports.modifySpot = function (body, address, type, charger, id) {
   return new Promise((resolve, reject) => {
-    
+
     var existingSpots = { // Τα δεδομένα των ήδη καταχωρημένων θέσεων μέσα στο σύστημα
       address: "Navarinou 18",
       id: 15,
@@ -180,6 +184,7 @@ exports.modifySpot = function (body, address, type, charger, id) {
  **/
 exports.removeSpot = function (id) {
   return new Promise(function (resolve, reject) {
+
     resolve();
   });
 }
@@ -196,7 +201,9 @@ exports.removeSpot = function (id) {
  **/
 exports.searchSpot = function(address,type,charger) {
   return new Promise(function(resolve, /*reject*/) { // remove unused reject
+
     var examples = {};
+
     examples['application/json'] = [ {
   "address" : "address",
   "id" : 0,
@@ -208,14 +215,18 @@ exports.searchSpot = function(address,type,charger) {
   "type" : "type",
   "chargerAvailability" : true
 } ];
+
     if (address === "address" || type === "type" || charger === true) {
       resolve(examples[Object.keys(examples)[0]]);
     }
+
     else {
+
       resolve({
         status: 404,
         message: "No matching parking spots found.",
       })
+      
     }
   });
 }
