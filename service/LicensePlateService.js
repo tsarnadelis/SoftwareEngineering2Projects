@@ -17,8 +17,16 @@ exports.modifyPlate = function(body) {
       "id": 15, 
     };
 
-    // If the licensePlate is not present in the request body or is an empty string, return an error with status code 400
-    if (!body.licensePlate || body.licensePlate === "" ) {
+    // If the licensePlate is not present in the request body, return an error with status code 400
+    if (!body.licensePlate) {
+      const error = new Error("license Plate does not exist");
+      error.response = { statusCode: 400 };
+      reject(error);
+      return;
+    }
+
+    // If the licensePlate is empty string in the request body, return an error with status code 400
+    if (body.licensePlate === "" ) {
       const error = new Error("license Plate does not exist");
       error.response = { statusCode: 400 };
       reject(error);
@@ -26,7 +34,15 @@ exports.modifyPlate = function(body) {
     }
 
     // If the id has an invalid value, return an error with status code 400
-    if (!Number.isInteger(body.id) || body.id < 0) {
+    if (!Number.isInteger(body.id)) {
+      const error = new Error("Invalid id: must be a positive integer.");
+      error.response = { statusCode: 400 };
+      reject(error);
+      return;
+    }
+
+    // If the id has an invalid value, return an error with status code 400
+    if (body.id < 0) {
       const error = new Error("Invalid id: must be a positive integer.");
       error.response = { statusCode: 400 };
       reject(error);
@@ -80,15 +96,31 @@ exports.registerPlate = function(body) {
     };
 
     // If the id has an invalid value, return an error with status code 400.
-    if (!Number.isInteger(body.id) || body.id < 0) {
+    if (!Number.isInteger(body.id)) {
+      const error = new Error("Invalid id: must be a positive integer.");
+      error.response = { statusCode: 400 };
+      reject(error);
+      return;
+    }
+
+    // If the id has an invalid value, return an error with status code 400.
+    if (body.id < 0) {
       const error = new Error("Invalid id: must be a positive integer.");
       error.response = { statusCode: 400 };
       reject(error);
       return;
     }
      
-    // If the licensePlate is not present in the request body or is an empty string, return an error with status code 400
-    if (!body.licensePlate || body.licensePlate === "") {
+    // If the licensePlate is not present in the request body, return an error with status code 400
+    if (!body.licensePlate) {
+      const error = new Error("licenseplate does not exist");
+      error.response = { statusCode: 400 };
+      reject(error);
+      return;
+    }
+
+    // If the licensePlate is an empty string, return an error with status code 400
+    if (body.licensePlate === "") {
       const error = new Error("licenseplate does not exist");
       error.response = { statusCode: 400 };
       reject(error);
