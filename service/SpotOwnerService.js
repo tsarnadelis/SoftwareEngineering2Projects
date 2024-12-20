@@ -10,16 +10,6 @@
  **/
 exports.addSpotOwner = function(body) {
   return new Promise((resolve, reject) =>{
-
-    //Ένας ήδη καταχωρημένος ιδιοκτήτης θέσεων με id, ταυτότητα, ονοματεπώνυμο, email, τηλέφωνο και λίστα με δικές του θέσεις.
-    var existingSpotOwners = {
-      "id":1,
-      "idNumber": "AK1234", 
-      "name":"John Doe", 
-      "email":"johhdoe@gmail.com",
-      "phone":"1234567890",
-      "spots":[] 
-    };
      
     if (!body.id || body.id < 0) {
       //αν το id έχει μη έγκυρη τιμή τότε έχω σφάλμα με κωδικό σφάλματος 400
