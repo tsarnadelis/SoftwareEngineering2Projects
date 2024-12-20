@@ -35,6 +35,8 @@ exports.modifyPlate = function(body) {
 
     /** Check if the provided id and licensePlate match exactly with any existing registration. **/
     const isExactMatch = existingPlates.id === body.id && existingPlates.licensePlate === body.licensePlate;
+
+    /** Implement the check */
     if (isExactMatch) {
         const error = new Error("License plate already exists.");
         error.response = { statusCode: 400 };
@@ -44,6 +46,8 @@ exports.modifyPlate = function(body) {
     
     /** Allow updating the license plate for an existing ID. Returns response code 200 **/
     const isValidUpdate = existingPlates.id === body.id && existingPlates.licensePlate !== body.licensePlate;
+
+    /** Implement the check */
     if (isValidUpdate) {
         resolve();
         return;
@@ -51,6 +55,8 @@ exports.modifyPlate = function(body) {
     
     /** Handle non-existent ID (the plate does not exist in the system).Return error code 404. **/
     const isNonExistent = existingPlates.id !== body.id;
+
+    /** Implement the check */
     if (isNonExistent) {
         const error = new Error("License plate doesn't exist.");
         error.response = { statusCode: 404 }; 
