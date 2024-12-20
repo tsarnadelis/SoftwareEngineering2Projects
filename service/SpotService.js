@@ -18,34 +18,29 @@ exports.createSpot = function (body) {
         "chargerAvailability": false  // η διαθεσιμότητα φορτιστή της θέσης
       };
 
-    if (!body.address) { // Έλεγχος αν υπάρχει το address.Το address πρέπει να είναι string.
-      const error = new Error("Invalid address: must be a string."); // Το address πρέπει να υπάρχει και να είναι string.
-      error.response = { statusCode: 400 }; // Διαφορετικά έχω σφάλμα με κωδικό σφάλματος 400
-      reject(error);
-      return; // επιστρέφει 400
+    // Define validation rules for each field
+    const validations = [
+      { key: 'address', rule: (value) => typeof value === 'string', 
+        errorMessage: "Invalid address: must be a string." },
+      { key: 'id', rule: (value) => value >= 0 && Number.isInteger(value), 
+        errorMessage: "Invalid id: must be a positive integer." },
+      { key: 'type', rule: (value) => ["Garage", "Open", "Underground"].includes(value), 
+        errorMessage: "Invalid type: must be one of 'Garage', 'Open', or 'Underground'." },
+      { key: 'chargerAvailability', rule: (value) => typeof value === 'boolean', 
+        errorMessage: "Invalid chargerAvailability: must be a boolean." }
+    ];
+
+    // Loop through validations and check for errors
+    for (const { key, rule, errorMessage } of validations) {
+      const value = body[key];
+      if (!rule(value)) {
+        const error = new Error(errorMessage);
+        error.response = { statusCode: 400 };
+        reject(error); // Reject with the appropriate error message and status code
+        return;
+      }
     }
     
-    if (!body.id || body.id < 0) { //Το id πρέπει να υπάρχει και να είναι θετικό
-      const error = new Error("Invalid id: must be a positive integer."); //Διαφορετικά, έχω σφάλμα
-      error.response = { statusCode: 400 }; // με κωδικό σφάλματος 400
-      reject(error);
-      return;  // Επιστρέφει 400
-    }
-
-    if (!["Garage", "Open", "Underground"].includes(body.type)) {//Το type πρέπει να ισούται με "Garage" ή "Open" ή "Underground"
-      const error = new Error("Invalid type: must be one of 'Garage', 'Open', or 'Underground'."); // Αλλιώς έχω σφάλμα
-      error.response = { statusCode: 400 }; // με κωδικό σφάλματος 400
-      reject(error);
-      return;  // Επιστρέφει 400
-    } 
-
-    if (typeof body.chargerAvailability !== 'boolean') {  //Το chargerAvailability πρέπει να είναι boolean.
-      const error = new Error("Invalid chargerAvailability: must be a boolean."); // Αλλιώς έχω σφάλμα 
-      error.response = { statusCode: 400 }; // Με κωδικό σφάλματος 400
-      reject(error);
-      return;  // Επιστρέφει 400
-    }
-
     const spotExists = existingSpots.id === body.id &&  // Έλεγχος αν υπάρχει ήδη το spot. Ειδικότερα, ελέγχω την ισότητα των id
                existingSpots.address === body.address && // τσεκάρω την ισότητα των διευθύνσεων
                existingSpots.type === body.type && // τσεκάρω την ισότητα των τύπων 
@@ -117,46 +112,30 @@ exports.modifySpot = function (body, address, type, charger, id) {
       charger: false, // η διαθεσιμότητα φορτιστή της θέσης 
     };
 
-    if (!["Garage", "Open", "Underground"].includes(type)) {//Το type πρέπει να ισούται με "Garage" ή "Open" ή "Underground"
-      const error = new Error("Invalid type in query: must be one of 'Garage', 'Open', or 'Underground'."); // Αλλιώς σφάλμα
-      error.response = { statusCode: 400 }; // με κωδικό σφάλματος 400
-      reject(error);
-      return; // Επιστρέφει 400
-    }
+    // Define validation rules for the query and body comparison
+    const validations = [
+      { condition: () => ["Garage", "Open", "Underground"].includes(type), 
+        errorMessage: "Invalid type in query: must be one of 'Garage', 'Open', or 'Underground'." },
+      { condition: () => id && id >= 0, 
+        errorMessage: "Invalid id in query: must be a positive integer." },
+      { condition: () => body.address === address, 
+        errorMessage: "Address mismatch between query and body." },
+      { condition: () => body.type === type, 
+        errorMessage: "Type mismatch between query and body." },
+      { condition: () => body.charger === charger, 
+        errorMessage: "Charger mismatch between query and body." },
+      { condition: () => body.id === id, 
+        errorMessage: "ID mismatch between query and body." },
+    ];
 
-    if (!id || id < 0) {    //Το id πρέπει να υπάρχει και να είναι μη αρνητικός ακέραιος αριθμός
-      const error = new Error("Invalid id in query: must be a positive integer."); // Αλλιώς έχω σφάλμα
-      error.response = { statusCode: 400 }; // με κωδικό 400
-      reject(error);
-      return;  // Επιστρέφει 400
-    }
-
-    if (body.address !== address) { // Σύγκριση του query address με το address του body.
-      const error = new Error("Address mismatch between query and body."); // Αν είναι διαφορετικά, τότε έχω σφάλμα
-      error.response = { statusCode: 400 }; // Με κωδικό 400
-      reject(error); 
-      return; // Επιστρέφει 400
-    }
-
-    if (body.type !== type) { // Σύγκριση του query type με το type του request body.
-      const error = new Error("Type mismatch between query and body."); // Αν είναι διαφορετικά, τότε έχω σφάλμα
-      error.response = { statusCode: 400 }; // Με κωδικό 400
-      reject(error);
-      return; // Επιστρέφει 400
-    }
-
-    if (body.charger !== charger) { // Σύγκριση του query charger με το charger του request body.
-      const error = new Error("Charger mismatch between query and body."); // Αν είναι διαφορετικά, τότε έχω σφάλμα
-      error.response = { statusCode: 400 }; // Με κωδικό 400
-      reject(error);
-      return; // Επιστρέφει 400
-    }
-
-    if (body.id !== id) { // Σύγκριση του query id με το id του request body.
-      const error = new Error("ID mismatch between query and body."); // Αν είναι διαφορετικά, τότε έχω σφάλμα
-      error.response = { statusCode: 400 }; // Με κωδικό 400
-      reject(error);
-      return; // Επιστρέφει 400
+    // Loop through validations and check for errors
+    for (const { condition, errorMessage } of validations) {
+      if (!condition()) {
+        const error = new Error(errorMessage);
+        error.response = { statusCode: 400 };
+        reject(error); // Reject with the appropriate error message and status code
+        return;
+      }
     }
 
     const spotExists = existingSpots.address === body.address && // Ελέγχω αν όντως τροποποίησα την θέση. Τσεκάρω διεύθυνση
