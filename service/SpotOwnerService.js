@@ -4,10 +4,19 @@
 /**
  * Add a new spot owner
  * FR15: The system administrator must be able to add a spot owner to the system
- *
+ * 
  * body SpotOwner Spot owner object to add
  * no response value expected for this operation
- **/
+ * @param {Object} body - Spot owner object to add.
+ * @property {number} body.id - Unique identifier for the spot owner. Must be a positive integer.
+ * @property {string} body.idNumber - Identification number for the spot owner. Must be a non-empty string.
+ * @property {string} body.name - Full name of the spot owner. Must be a non-empty string.
+ * @property {string} body.email - Email address of the spot owner. Must be a valid non-empty string.
+ * @property {string} body.phone - Contact number of the spot owner. Must be present.
+ * @property {Array} body.spots - List of spots owned by the user. Must be present.
+ * 
+ * @returns {Promise} Resolves if addition is successful, rejects with an error otherwise.
+ */
 exports.addSpotOwner = function(body) {
   return new Promise((resolve, reject) =>{
 
