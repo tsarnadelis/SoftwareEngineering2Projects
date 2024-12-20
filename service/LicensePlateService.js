@@ -8,41 +8,25 @@
  * body LicensePlate License plate object to update
  * no response value expected for this operation
  **/
-
-
 exports.modifyPlate = function(body) {
   return new Promise(function(resolve, reject) {
-    
- 
     
     // Μια ήδη καταχωρημένη πινακίδα μέσα στο σύστημα
     var existingPlates = {
       "licensePlate": "AKH1314", // όνομα πινακίδας
       "id": 15, // το id της πινακίδας
-      
     };
 
+    //αν το licensePlate δεν υπάρχει στο request body ή ισούται με το κενό string τότε έχω σφάλμα με κωδικό σφάλματος 400
     if (!body.licensePlate || body.licensePlate === "" ) {
-      //αν το licensePlate δεν υπάρχει στο request body ή ισούται με το κενό string τότε έχω σφάλμα με κωδικό σφάλματος 400
       const error = new Error("license Plate does not exist");
       error.response = { statusCode: 400 };
       reject(error);
       return;
     }
 
-    // Ο έλεγχος αυτός έγινε comment διότι εκτελείται από το swagger. Συνεπώς, τον κάνω comment ώστε να μην μου χαλάει το
-    //coverage του modifyPlate
-    // if (typeof body.licensePlate !== "string"){
-    //   //αν το licensePlate έχει μη έγκυρη τιμή τότε έχω σφάλμα με κωδικό σφάλματος 400
-    //   const error = new Error("Invalid licenseplate");
-    //   error.response = { statusCode: 400 };
-    //   reject(error);
-    //   return;
-    // }
-    
-
+    //αν το id έχει μη έγκυρη τιμή τότε έχω σφάλμα με κωδικό σφάλματος 400
     if (!Number.isInteger(body.id) || body.id < 0) {
-      //αν το id έχει μη έγκυρη τιμή τότε έχω σφάλμα με κωδικό σφάλματος 400
       const error = new Error("Invalid id: must be a positive integer.");
       error.response = { statusCode: 400 };
       reject(error);
@@ -63,18 +47,19 @@ exports.modifyPlate = function(body) {
     }
     
     // Allow updating the license plate for an existing ID (Επιτυχής τροποποίηση πινακίδας)
+    // Valid update returns response code 200
     const isValidUpdate = existingPlates.id === body.id && existingPlates.licensePlate !== body.licensePlate;
     if (isValidUpdate) {
-        resolve(); // This means the update is valid, return 200
+        resolve();
         return;
     }
     
     // Handle non-existent ID (η πινακίδα δεν υπάρχει μέσα στο σύστημα)
+    // Αν η πινακίδα που επιθυμώ να τροποποιήσω ΔΕΝ βρεθεί, τότε επιστρέφει κωδικό σφάλματος 404.
     const isNonExistent = existingPlates.id !== body.id;
     if (isNonExistent) {
         const error = new Error("License plate doesn't exist.");
-        error.response = { statusCode: 404 }; // Επιστρέφει κωδικό σφάλματος 404.
-        //Δηλαδή, η πινακίδα που επιθυμώ να τροποποιήσω ΔΕΝ βρέθηκε.
+        error.response = { statusCode: 404 }; 
         reject(error);
         return;
     }
@@ -98,36 +83,24 @@ exports.registerPlate = function(body) {
     var existingPlates = {
       "licensePlate": "AKH1314", // το όνομα της πινακίδας
       "id": 15, // το id της πινακίδας
-      
     };
 
-    
+    //αν το id έχει μη έγκυρη τιμή τότε έχω σφάλμα με κωδικό σφάλματος 400
     if (!Number.isInteger(body.id) || body.id < 0) {
-      //αν το id έχει μη έγκυρη τιμή τότε έχω σφάλμα με κωδικό σφάλματος 400
       const error = new Error("Invalid id: must be a positive integer.");
       error.response = { statusCode: 400 };
       reject(error);
       return;
     }
      
-    
+    //αν το licensePlate δεν υπάρχει στο request body ή ισούται με το κενό string τότε έχω σφάλμα με κωδικό σφάλματος 400
     if (!body.licensePlate || body.licensePlate === "") {
-      //αν το licensePlate δεν υπάρχει στο request body ή ισούται με το κενό string τότε έχω σφάλμα με κωδικό σφάλματος 400
       const error = new Error("licenseplate does not exist");
       error.response = { statusCode: 400 };
       reject(error);
       return;
     }
   
-    // Ο έλεγχος αυτός έγινε comment διότι εκτελείται από το swagger. Συνεπώς, τον κάνω comment ώστε να μην μου χαλάει το
-    //coverage του registerPlate
-    // if (typeof body.licensePlate !== "string"){
-    //   //αν το licensePlate έχει μη έγκυρη τιμή τότε έχω σφάλμα με κωδικό σφάλματος 400
-    //   const error = new Error("Invalid licenseplate");
-    //   error.response = { statusCode: 400 };
-    //   reject(error);
-    //   return;
-    // }
     resolve();
     });
 };
