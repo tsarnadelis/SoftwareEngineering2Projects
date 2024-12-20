@@ -79,12 +79,6 @@ exports.modifyPlate = function(body) {
 exports.registerPlate = function(body) {
   return new Promise((resolve, reject) => { 
 
-    /** A license plate already registered in the system **/
-    var existingPlates = {
-      "licensePlate": "AKH1314",
-      "id": 15, 
-    };
-
     /** If the id has an invalid value, return an error with status code 400 **/
     if (!Number.isInteger(body.id) || body.id < 0) {
       const error = new Error("Invalid id: must be a positive integer.");
