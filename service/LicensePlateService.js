@@ -17,16 +17,8 @@ exports.modifyPlate = function(body) {
       "id": 15, 
     };
 
-    // If the licensePlate is not present in the request body, return an error with status code 400
-    if (!body.licensePlate) {
-      const error = new Error("license Plate does not exist");
-      error.response = { statusCode: 400 };
-      reject(error);
-      return;
-    }
-
-    // If the licensePlate is empty string in the request body, return an error with status code 400
-    if (body.licensePlate === "" ) {
+    // If the licensePlate is not present in the request body or is an empty string, return an error with status code 400
+    if (!body.licensePlate || body.licensePlate === "" ) {
       const error = new Error("license Plate does not exist");
       error.response = { statusCode: 400 };
       reject(error);
@@ -34,22 +26,18 @@ exports.modifyPlate = function(body) {
     }
 
     // If the id has an invalid value, return an error with status code 400
-    if (!Number.isInteger(body.id)) {
+    if (!Number.isInteger(body.id) || body.id < 0) {
       const error = new Error("Invalid id: must be a positive integer.");
       error.response = { statusCode: 400 };
       reject(error);
       return;
     }
 
-    // If the id has an invalid value, return an error with status code 400
-    if (body.id < 0) {
-      const error = new Error("Invalid id: must be a positive integer.");
-      error.response = { statusCode: 400 };
-      reject(error);
-      return;
-    }
-
-    // Only if the registered plate has the same id but a different name, update it.
+    // If the dummy plate already registered in the system has the same id as the request body but a different
+    // license plate name from the request body, the modification of the license plate is successful.
+    // If the attributes of the dummy registered plate and the request body match, then the plate is not modified,
+    // and its "old" attributes are retained. Finally, if all attributes of the dummy plate differ from those
+    // of the request body, a new plate is created and an existing plate is NOT modified.
     const isExactMatch = existingPlates.id === body.id && existingPlates.licensePlate === body.licensePlate;
     if (isExactMatch) {
         const error = new Error("License plate already exists.");
@@ -58,14 +46,16 @@ exports.modifyPlate = function(body) {
         return;
     }
     
-    // Allow updating the license plate for an existing ID(Successful license plate modification). Returns code 200.
+    // Allow updating the license plate for an existing ID (Successful license plate modification)
+    // Valid update returns response code 200
     const isValidUpdate = existingPlates.id === body.id && existingPlates.licensePlate !== body.licensePlate;
     if (isValidUpdate) {
         resolve();
         return;
     }
     
-    // Handle non-existent ID. If the plate does not exist in the system, then returns code 404.
+    // Handle non-existent ID (the plate does not exist in the system)
+    // If the plate to be modified is NOT found, return error code 404.
     const isNonExistent = existingPlates.id !== body.id;
     if (isNonExistent) {
         const error = new Error("License plate doesn't exist.");
@@ -74,7 +64,7 @@ exports.modifyPlate = function(body) {
         return;
     }
     
-    resolve();
+    resolve();  // Return the updated plate object
   });
 };
 
@@ -95,32 +85,16 @@ exports.registerPlate = function(body) {
       "id": 15, 
     };
 
-    // If the id has an invalid value, return an error with status code 400.
-    if (!Number.isInteger(body.id)) {
-      const error = new Error("Invalid id: must be a positive integer.");
-      error.response = { statusCode: 400 };
-      reject(error);
-      return;
-    }
-
-    // If the id has an invalid value, return an error with status code 400.
-    if (body.id < 0) {
+    // If the id has an invalid value, return an error with status code 400
+    if (!Number.isInteger(body.id) || body.id < 0) {
       const error = new Error("Invalid id: must be a positive integer.");
       error.response = { statusCode: 400 };
       reject(error);
       return;
     }
      
-    // If the licensePlate is not present in the request body, return an error with status code 400
-    if (!body.licensePlate) {
-      const error = new Error("licenseplate does not exist");
-      error.response = { statusCode: 400 };
-      reject(error);
-      return;
-    }
-
-    // If the licensePlate is an empty string, return an error with status code 400
-    if (body.licensePlate === "") {
+    // If the licensePlate is not present in the request body or is an empty string, return an error with status code 400
+    if (!body.licensePlate || body.licensePlate === "") {
       const error = new Error("licenseplate does not exist");
       error.response = { statusCode: 400 };
       reject(error);
