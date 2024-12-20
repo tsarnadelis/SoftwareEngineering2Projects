@@ -9,54 +9,48 @@
  * no response value expected for this operation
  **/
 exports.addSpotOwner = function(body) {
-  return new Promise((resolve, reject) =>{
+  return new Promise((resolve, reject) => {
      
     if (!body.id || body.id < 0) {
-      //αν το id έχει μη έγκυρη τιμή τότε έχω σφάλμα με κωδικό σφάλματος 400
-      const error = new Error("Invalid id: must be a positive integer.");
-      error.response = { statusCode: 400 };
-      reject(error);
-      return;
+      const error = new Error("Invalid id: must be a positive integer.");     // id must be non negative integer 
+      error.response = { statusCode: 400 };    // if id is invalid then returns 400
+      reject(error);  
+      return; 
     }
 
     if (!body.idNumber || typeof body.idNumber !== "string") {
-      //αν το idNumber έχει μη έγκυρη τιμή τότε έχω σφάλμα με κωδικό σφάλματος 400
-      const error = new Error("Invalid idNumber: must be a string.");
-      error.response = { statusCode: 400 };
+      const error = new Error("Invalid idNumber: must be a string.");   // id number must be string
+      error.response = { statusCode: 400 };    // if idNumber is invalid then returns 400
       reject(error);
-      return;
+      return; 
     }
 
-    if (!body.name || typeof body.name !== "string") {  
-      //αν το name έχει μη έγκυρη τιμή τότε έχω σφάλμα με κωδικό σφάλματος 400
-      const error = new Error("Invalid name: must be a string.");
-      error.response = { statusCode: 400 };
+    if (!body.name || typeof body.name !== "string") {
+      const error = new Error("Invalid name: must be a string.");   // name must be string
+      error.response = { statusCode: 400 };   // if name is invalid then returns 400
       reject(error);
-      return;
+      return; 
     }
 
     if (!body.email || typeof body.email !== "string") {
-      //αν το email έχει μη έγκυρη τιμή τότε έχω σφάλμα με κωδικό σφάλματος 400
-      const error = new Error("Invalid email: must be a string.");
-      error.response = { statusCode: 400 };
+      const error = new Error("Invalid email: must be a string.");   // email must be string
+      error.response = { statusCode: 400 };    // if email is invalid then returns 400
       reject(error);
-      return;
+      return; 
     }
     
     if (!body.phone) {
-      //αν το phone δεν υπάρχει στο request body τότε έχω σφάλμα με κωδικό σφάλματος 400
-      const error = new Error("No phone.");
-      error.response = { statusCode: 400 };
+      const error = new Error("No phone.");  // phone must exists in SpotOwner's data
+      error.response = { statusCode: 400 };  // if phone is non - existent then returns 400
       reject(error);
-      return;
+      return; 
     }
 
     if (!body.spots) {
-      //αν το spots δεν υπάρχει στο request body τότε έχω σφάλμα με κωδικό σφάλματος 400
-      const error = new Error("No spots.");
-      error.response = { statusCode: 400 };
+      const error = new Error("No spots.");   // Spots must exists in SpotOwner's data
+      error.response = { statusCode: 400 };   // if the spot's list is non - existent then returns 400
       reject(error);
-      return;
+      return; 
     }
 
     resolve();
