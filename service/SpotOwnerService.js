@@ -1,6 +1,3 @@
-'use strict';
-
-
 /**
  * Add a new spot owner
  * FR15: The system administrator must be able to add a spot owner to the system
@@ -10,49 +7,27 @@
  **/
 exports.addSpotOwner = function(body) {
   return new Promise((resolve, reject) => {
-     
-    if (!body.id || body.id < 0) {
-      const error = new Error("Invalid id: must be a positive integer.");     // id must be non negative integer 
-      error.response = { statusCode: 400 };    // if id is invalid then returns 400
-      reject(error);   // reject the error
-      return; 
+    // Define validation rules for each field
+    const validations = [
+      { key: 'id', rule: (value) => value >= 0 && Number.isInteger(value), errorMessage: 'Invalid id: must be a positive integer.' },
+      { key: 'idNumber', rule: (value) => typeof value === 'string', errorMessage: 'Invalid idNumber: must be a string.' },
+      { key: 'name', rule: (value) => typeof value === 'string', errorMessage: 'Invalid name: must be a string.' },
+      { key: 'email', rule: (value) => typeof value === 'string', errorMessage: 'Invalid email: must be a string.' },
+      { key: 'phone', rule: (value) => value !== undefined, errorMessage: 'No phone.' },
+      { key: 'spots', rule: (value) => value !== undefined, errorMessage: 'No spots.' },
+    ];
+
+    // Loop through validations
+    for (const { key, rule, errorMessage } of validations) {
+      const value = body[key];
+      if (!rule(value)) {
+        const error = new Error(errorMessage);
+        error.response = { statusCode: 400 };
+        reject(error); // Reject with the appropriate error message and status code
+        return;
+      }
     }
 
-    if (!body.idNumber || typeof body.idNumber !== "string") {
-      const error = new Error("Invalid idNumber: must be a string.");   // id number must be string
-      error.response = { statusCode: 400 };    // if idNumber is invalid then returns 400
-      reject(error);   // reject the error
-      return; 
-    }
-
-    if (!body.name || typeof body.name !== "string") {
-      const error = new Error("Invalid name: must be a string.");   // name must be string
-      error.response = { statusCode: 400 };   // if name is invalid then returns 400
-      reject(error);  // reject the error
-      return; 
-    }
-
-    if (!body.email || typeof body.email !== "string") {
-      const error = new Error("Invalid email: must be a string.");   // email must be string
-      error.response = { statusCode: 400 };    // if email is invalid then returns 400
-      reject(error);  // reject the error 
-      return; 
-    }
-    
-    if (!body.phone) {
-      const error = new Error("No phone.");  // phone must exists in SpotOwner's data
-      error.response = { statusCode: 400 };  // if phone is non - existent then returns 400
-      reject(error);  // reject the error 
-      return; 
-    }
-
-    if (!body.spots) {
-      const error = new Error("No spots.");   // Spots must exists in SpotOwner's data
-      error.response = { statusCode: 400 };   // if the spot's list is non - existent then returns 400
-      reject(error);  // reject the error
-      return; 
-    }
-
-    resolve();
-    });
-}
+    resolve(); // All validations passed
+  });
+};
