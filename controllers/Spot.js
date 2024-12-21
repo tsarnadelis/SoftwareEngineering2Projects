@@ -3,7 +3,7 @@
 var utils = require('../utils/writer.js');
 var Spot = require('../service/SpotService');
 
-module.exports.createSpot = function createSpot (_, res, _, body) {
+module.exports.createSpot = function createSpot (_req, res, _next, body) {
   Spot.createSpot(body)
     .then(function (response) {
       utils.writeJson(res, response);
@@ -13,7 +13,7 @@ module.exports.createSpot = function createSpot (_, res, _, body) {
     });
 };
 
-module.exports.getSpots = function getSpots (_, res, _) {
+module.exports.getSpots = function getSpots (__req, res,_next) {
   Spot.getSpots()
     .then(function (response) {
       utils.writeJson(res, response);
@@ -23,7 +23,7 @@ module.exports.getSpots = function getSpots (_, res, _) {
     });
 };
 
-module.exports.modifySpot = function modifySpot (_, res, _, body, address, type, charger, id) {
+module.exports.modifySpot = function modifySpot (__req, res,_next, body, address, type, charger, id) {
   Spot.modifySpot(body, address, type, charger, id)
     .then(function (response) {
       utils.writeJson(res, response);
@@ -33,7 +33,7 @@ module.exports.modifySpot = function modifySpot (_, res, _, body, address, type,
     });
 };
 
-module.exports.removeSpot = function removeSpot (_, res, _, id) {
+module.exports.removeSpot = function removeSpot (_req, res, _next, id) {
   Spot.removeSpot(id)
     .then(function (response) {
       utils.writeJson(res, response);
@@ -43,7 +43,7 @@ module.exports.removeSpot = function removeSpot (_, res, _, id) {
     });
 };
 
-module.exports.searchSpot = function searchSpot (_, res, _, address, type, charger) {
+module.exports.searchSpot = function searchSpot (_req, res, _next, address, type, charger) {
   Spot.searchSpot(address, type, charger)
     .then(function (response) {
       utils.writeJson(res, response);

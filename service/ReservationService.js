@@ -112,7 +112,7 @@ exports.makeReservation = function(body) {
  * id Integer 
  * no response value expected for this operation
  **/
-exports.modifyReservation = function(body,spotId,userId,_ ,_ ,_,id) {
+exports.modifyReservation = function(body,spotId,userId,_startTime ,_duration ,_date,id) {
   return new Promise(function(resolve, reject) {
  
     // // Η ημερομηνία της κράτησης πρεπει να είναι string (τύπος date)
