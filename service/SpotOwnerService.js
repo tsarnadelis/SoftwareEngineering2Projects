@@ -7,27 +7,37 @@
  **/
 exports.addSpotOwner = function(body) {
   return new Promise((resolve, reject) => {
-    // Define validation rules for each field
+
+    //idNumber = αριθμός ταυτότητας
+    //spots = μια λίστα που περιέχει τις θέσεις που ανήκουν στον ιδιοκτήτη θέσεων.
+    
+    // Ορίζω κανόνες εγκυρότητας για κάθε field του Ιδιοκτήτη θέσεων.
+    //Αν το id δεν είναι θετικός ακέραιος τότε έχω σφάλμα με κωδικό 400.
+    //Αν το idNumber δεν είναι string τότε έχω σφάλμα με κωδικό 400. Το ίδιο ισχύει και για τα name και email.
+    //Αν το phone δεν υπάρχει στο request body τότε έχω σφάλμα με κωδικό σφάλματος 400. Το ίδιο ισχύει και για το spots.
     const validations = [
-      { key: 'id', rule: (value) => value >= 0 && Number.isInteger(value), errorMessage: 'Invalid id: must be a positive integer.' },
-      { key: 'idNumber', rule: (value) => typeof value === 'string', errorMessage: 'Invalid idNumber: must be a string.' },
-      { key: 'name', rule: (value) => typeof value === 'string', errorMessage: 'Invalid name: must be a string.' },
-      { key: 'email', rule: (value) => typeof value === 'string', errorMessage: 'Invalid email: must be a string.' },
+      { key: 'id', rule: (value) => value > 0 && Number.isInteger(value), errorMessage: 'Invalid id: must be a positive integer.' },
+      { key: 'idNumber', rule: (value) => typeof value === 'string' && value !== undefined 
+        && value !== null && value.trim() !== '', errorMessage: 'Invalid idNumber: must be a string.' },
+      { key: 'name', rule: (value) => typeof value === 'string' && value !== undefined 
+        && value !== null && value.trim() !== '', errorMessage: 'Invalid name: must be a string.' },
+      { key: 'email', rule: (value) => typeof value === 'string' && value !== undefined 
+        && value !== null && value.trim() !== '', errorMessage: 'Invalid email: must be a string.' },
       { key: 'phone', rule: (value) => value !== undefined, errorMessage: 'No phone.' },
       { key: 'spots', rule: (value) => value !== undefined, errorMessage: 'No spots.' },
     ];
 
-    // Loop through validations
+    // Έλεγχος για σφάλματα στα fields του Ιδιοκτήτη θέσεων
     for (const { key, rule, errorMessage } of validations) {
       const value = body[key];
-      if (!rule(value)) {
+      if (!rule(value)) { // Αν η τιμή δεν ικανοποιεί τον κανόνα εγκυρότητας (rule), τότε υπάρχει σφάλμα
         const error = new Error(errorMessage);
-        error.response = { statusCode: 400 };
-        reject(error); // Reject with the appropriate error message and status code
+        error.response = { statusCode: 400 }; // Επιστρέφει κωδικό 400
+        reject(error);
         return;
       }
     }
 
-    resolve(); // All validations passed
+    resolve();
   });
 };
