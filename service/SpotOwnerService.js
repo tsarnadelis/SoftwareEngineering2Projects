@@ -13,7 +13,7 @@
 exports.addSpotOwner = function(body) {
   return new Promise((resolve, reject) =>{
     //SpotOwner = Ιδιοκτήτης θέσεων πάρκινγκ
-    var existingSpotOwners = {
+    var _ = {
       "id":1,  // το id του ιδιοκτήτη θέσεων
       "idNumber": "AK1234", // ο αριθμός ταυτότητας του ιδιοκτήτη θέσεων
       "name":"John Doe", // ο ονοματεπώνυμο του ιδιοκτήτη  

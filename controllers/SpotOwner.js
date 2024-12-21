@@ -3,7 +3,7 @@
 var utils = require('../utils/writer.js');
 var SpotOwner = require('../service/SpotOwnerService');
 
-module.exports.addSpotOwner = function addSpotOwner (_req, res, _next, body) {
+module.exports.addSpotOwner = function addSpotOwner (_, res, next, body) {
   SpotOwner.addSpotOwner(body)
     .then(function (response) {
       utils.writeJson(res, response);

@@ -9,7 +9,7 @@
  * no response value expected for this operation
  **/
 exports.deleteReservation = function(id) {
-  return new Promise(function(resolve, reject) {
+  return new Promise(function(resolve, _ /*reject*/) {
     resolve();
   });
 }
@@ -112,7 +112,7 @@ exports.makeReservation = function(body) {
  * id Integer 
  * no response value expected for this operation
  **/
-exports.modifyReservation = function(body,spotId,userId,_startTime ,_duration ,_date,id) {
+exports.modifyReservation = function(body,spotId,userId,_ /*startTime*/ ,duration ,date,id) {
   return new Promise(function(resolve, reject) {
  
     // // Η ημερομηνία της κράτησης πρεπει να είναι string (τύπος date)
@@ -182,4 +182,3 @@ exports.modifyReservation = function(body,spotId,userId,_startTime ,_duration ,_
     resolve();
   });
 }
-

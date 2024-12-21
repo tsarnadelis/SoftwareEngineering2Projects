@@ -95,7 +95,7 @@ exports.registerPlate = function(body) {
   return new Promise((resolve, reject) => { 
 
     // Μια ήδη καταχωρημένη πινακίδα μέσα στο σύστημα
-    var existingPlates = {
+    var _ = {
       "licensePlate": "AKH1314", // το όνομα της πινακίδας
       "id": 15, // το id της πινακίδας
       
