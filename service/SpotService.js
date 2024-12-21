@@ -18,42 +18,45 @@ exports.createSpot = function (body) {
         "chargerAvailability": false  // η διαθεσιμότητα φορτιστή της θέσης
       };
 
-    // Define validation rules for each field
+    // Ορίζω τους κανόνες εγκυρότητας για κάθε field της θέσης πάρκινγκ. Το κάνω αυτό για να μειώσω το πλήθος των reject(error)
     const validations = [
-      { key: 'address', rule: (value) => typeof value === 'string', 
-        errorMessage: "Invalid address: must be a string." },
-      { key: 'id', rule: (value) => value >= 0 && Number.isInteger(value), 
-        errorMessage: "Invalid id: must be a positive integer." },
-      { key: 'type', rule: (value) => ["Garage", "Open", "Underground"].includes(value), 
+      { key: 'address',  rule: (value) => value !== undefined && value !== null && typeof value === 'string' 
+        && value.trim() !== '', errorMessage: "Invalid address: must be a string." },  // Η διεύθυνση είναι string
+      { key: 'id', rule: (value) => value >= 0 && Number.isInteger(value),  // το id είναι μη αρνητικός ακέραιος αριθμός
+        errorMessage: "Invalid id: must be a non-negative integer." },
+      { key: 'type', rule: (value) => ["Garage", "Open", "Underground"].includes(value), // ο τύπος μπορεί να πάρει 3 διαφορετικές τιμές
         errorMessage: "Invalid type: must be one of 'Garage', 'Open', or 'Underground'." },
-      { key: 'chargerAvailability', rule: (value) => typeof value === 'boolean', 
+      { key: 'chargerAvailability', rule: (value) => typeof value === 'boolean',  // Η διαθεσιμότητα φορτιστή είναι boolean
         errorMessage: "Invalid chargerAvailability: must be a boolean." }
     ];
 
-    // Loop through validations and check for errors
+    // Έλεγχος για σφάλματα στα fields της θέσης πάρκινγκ
     for (const { key, rule, errorMessage } of validations) {
       const value = body[key];
-      if (!rule(value)) {
+      if (!rule(value)) { // Αν η τιμή δεν ικανοποιεί τον κανόνα εγκυρότητας (rule), τότε υπάρχει σφάλμα
         const error = new Error(errorMessage);
-        error.response = { statusCode: 400 };
-        reject(error); // Reject with the appropriate error message and status code
+        error.response = { statusCode: 400 }; // Επιστρέφει κωδικό 400
+        reject(error); 
         return;
       }
     }
     
-    const spotExists = existingSpots.id === body.id &&  // Έλεγχος αν υπάρχει ήδη το spot. Ειδικότερα, ελέγχω την ισότητα των id
-               existingSpots.address === body.address && // τσεκάρω την ισότητα των διευθύνσεων
-               existingSpots.type === body.type && // τσεκάρω την ισότητα των τύπων 
-               existingSpots.chargerAvailability === body.chargerAvailability; // και τέλος τσεκάρω τη διαθεσιμότητα φορτιστή
+    // Έλεγχος αν υπάρχει ήδη το spot , δηλαδή γίνεται έλεγχος για διπλότυπη θέση.
+    // Αν όλα τα attributes του existingSpots ισούται ένα προς ένα με όλα τα attributes του spot που θέλω να φτιάξω,
+    // τότε θέλω να δημιουργήσω μια διπλότυπη θέση. Άρα, έχω σφάλμα
+    const spotExists = existingSpots.id === body.id &&  
+               existingSpots.address === body.address && 
+               existingSpots.type === body.type && 
+               existingSpots.chargerAvailability === body.chargerAvailability;
           
     if (spotExists) { //Αν βρεθεί διπλότυπη θέση 
       const error = new Error("Spot already exists: a spot with the same attributes already exists."); // έχω σφάλμα
       error.response = { statusCode: 400 }; // με κωδικό 400
       reject(error);
-      return; // Επιστρέφει 400
+      return;
     }
 
-    resolve();  // Δημιουργεί τη θέση πάρκινγκ.
+    resolve();// Η θέση έχει περάσει όλους τους ελέγχους και μπορώ να την προσθέσω. Δεν το κάνω, καθώς η συνάρτηση είναι dummy.
   });
 };
 
@@ -66,10 +69,8 @@ exports.createSpot = function (body) {
  **/
 exports.getSpots = function () {
   return new Promise(function (resolve, /**reject*/) { // reject is unused
-
     var examples = {};
-
-    examples['application/json'] = [{ // dummy δεδομένα θέσεων
+    examples['application/json'] = [{
       "address": "address",
       "id": 0,
       "type": "type",
@@ -80,12 +81,10 @@ exports.getSpots = function () {
       "type": "type",
       "chargerAvailability": true
     }];
-
     if (Object.keys(examples).length > 0) {
       resolve(examples[Object.keys(examples)[0]]);
     } else {
-
-      resolve(); // Eπιστρέφει όλες τις διαθέσιμες θέσεις μέσα στο σύστημα.
+      resolve();
     }
   });
 }
@@ -112,44 +111,52 @@ exports.modifySpot = function (body, address, type, charger, id) {
       charger: false, // η διαθεσιμότητα φορτιστή της θέσης 
     };
 
-    // Define validation rules for the query and body comparison
+    //Ορίζω κανόνες εγκυρότητας για το type και το id της θέσης πάρκινγκ. Τα address και charger ελέγχονται από το swagger.
+    //Επίσης, ορίζω κανόνες εγκυρότητας για τη σύγκριση της ισότητας των query και body παραμέτρων.
+    //Το κάνω αυτό για να μειώσω το πλήθος των reject(error).
     const validations = [
-      { condition: () => ["Garage", "Open", "Underground"].includes(type), 
+      { condition: () => ["Garage", "Open", "Underground"].includes(type),  // ο τύπος μπορεί να πάρει 3 διαφορετικές τιμές
         errorMessage: "Invalid type in query: must be one of 'Garage', 'Open', or 'Underground'." },
-      { condition: () => id && id >= 0, 
+      { condition: () => id && id >= 0, // το id πρέπει να είναι μη αρνητικός ακέραιος αριθμός
         errorMessage: "Invalid id in query: must be a positive integer." },
-      { condition: () => body.address === address, 
+      { condition: () => body.address === address, // Τα address των query και body πρέπει να ταυτίζονται
         errorMessage: "Address mismatch between query and body." },
-      { condition: () => body.type === type, 
+      { condition: () => body.type === type, // Τα type των query και body πρέπει να ταυτίζονται
         errorMessage: "Type mismatch between query and body." },
-      { condition: () => body.charger === charger, 
+      { condition: () => body.charger === charger, // Τα charger των query και body πρέπει να ταυτίζονται
         errorMessage: "Charger mismatch between query and body." },
-      { condition: () => body.id === id, 
+      { condition: () => body.id === id, // Τα id των query και body πρέπει να ταυτίζονται
         errorMessage: "ID mismatch between query and body." },
     ];
 
-    // Loop through validations and check for errors
+    // Έλεγχος για σφάλματα με βάση τους παραπάνω κανόνες εγκυρότητας
     for (const { condition, errorMessage } of validations) {
-      if (!condition()) {
+      if (!condition()) { // Αν δεν ικανοποιείται το condition, τότε υπάρχει σφάλμα
         const error = new Error(errorMessage);
-        error.response = { statusCode: 400 };
-        reject(error); // Reject with the appropriate error message and status code
+        error.response = { statusCode: 400 }; // Επιστρέφει 400
+        reject(error); 
         return;
       }
     }
 
-    const spotExists = existingSpots.address === body.address && // Ελέγχω αν όντως τροποποίησα την θέση. Τσεκάρω διεύθυνση
-    existingSpots.type === body.type &&  // Τσεκάρω τύπο
-    existingSpots.charger === body.charger; // Τσεκάρω διαθεσιμότητα φορτιστή
+    // Έλεγχος αν τα τροποποιημένα στοιχεία της θέσης ταυτίζονται με τα "παλιά" στοιχεία της θέσης. 
+    //Ουσιαστικά, δεν γίνεται τροποποίηση.
+    //Δεν ελέγχω τα id του existingSpots και του body διότι θεωρώ εκ των πραγμάτων ότι ισούται μεταξύ τους.
+    // Αυτό συμβαίνει διότι κάνω modify μια ήδη υπάρχουσα θέση , άρα το id δεν αλλάζει κατά το modification.
+    // Αν άλλαζε το id τότε θα έκανα create μια νέα θέση. 
+    // Αντίστοιχος έλεγχος έγινε και στο PUT /licensePlate.
+    const spotExists = existingSpots.address === body.address &&
+    existingSpots.type === body.type &&
+    existingSpots.charger === body.charger;
 
     if (spotExists) { //Έλεγχος αν τα τροποποιημένα στοιχεία της θέσης ταυτίζονται με τα "παλιά" της στοιχεία 
       const error = new Error("Spot already exists: a spot with the same attributes already exists."); // Αν ναι , τότε σφάλμα
       error.response = { statusCode: 400 }; // με κωδικό 400
       reject(error);
-      return; // Επιστρέφει 400
+      return;
     }
 
-    resolve(); // Επιστρέφει τη τροποποιημένη θέση
+    resolve();// Η θέση έχει περάσει όλους τους ελέγχους και μπορώ να την τροποποιήσω. Δεν το κάνω, καθώς η συνάρτηση είναι dummy.
   });
 };
 
@@ -163,7 +170,6 @@ exports.modifySpot = function (body, address, type, charger, id) {
  **/
 exports.removeSpot = function (id) {
   return new Promise(function (resolve, reject) {
-
     resolve();  // Διαγράφει τη θέση από το σύστημα
   });
 }
@@ -180,10 +186,8 @@ exports.removeSpot = function (id) {
  **/
 exports.searchSpot = function(address,type,charger) {
   return new Promise(function(resolve, /*reject*/) { // remove unused reject
-
     var examples = {};
-
-    examples['application/json'] = [ { // dummy δεδομένα θέσεων
+    examples['application/json'] = [ {
   "address" : "address",
   "id" : 0,
   "type" : "type",
@@ -194,15 +198,12 @@ exports.searchSpot = function(address,type,charger) {
   "type" : "type",
   "chargerAvailability" : true
 } ];
-
-    if (address === "address" || type === "type" || charger === true) { // Φίλτρα αναζήτησης θέσης
-      resolve(examples[Object.keys(examples)[0]]); // Αν βρεθούν θέσεις τις επιστρέφει
+    if (address === "address" || type === "type" || charger === true) {
+      resolve(examples[Object.keys(examples)[0]]);
     }
-
-    else {  // Αλλιώς, αν δεν βρεθούν θέσεις
-
+    else {
       resolve({
-        status: 404,  // Επιστρέφει κωδικό
+        status: 404,
         message: "No matching parking spots found.",
       })
       
