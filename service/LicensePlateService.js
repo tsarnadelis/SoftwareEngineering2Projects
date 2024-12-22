@@ -93,14 +93,6 @@ exports.modifyPlate = function(body) {
  **/
 exports.registerPlate = function(body) {
   return new Promise((resolve, reject) => { 
-
-    // Μια ήδη καταχωρημένη πινακίδα μέσα στο σύστημα
-    var _ = {
-      "licensePlate": "AKH1314", // το όνομα της πινακίδας
-      "id": 15, // το id της πινακίδας
-      
-    };
-
     
     if (!Number.isInteger(body.id) || body.id < 0) {
       //αν το id έχει μη έγκυρη τιμή τότε έχω σφάλμα με κωδικό σφάλματος 400

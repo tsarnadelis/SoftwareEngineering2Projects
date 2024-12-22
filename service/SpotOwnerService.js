@@ -12,17 +12,7 @@
 
 exports.addSpotOwner = function(body) {
   return new Promise((resolve, reject) =>{
-    //SpotOwner = Ιδιοκτήτης θέσεων πάρκινγκ
-    var _ = {
-      "id":1,  // το id του ιδιοκτήτη θέσεων
-      "idNumber": "AK1234", // ο αριθμός ταυτότητας του ιδιοκτήτη θέσεων
-      "name":"John Doe", // ο ονοματεπώνυμο του ιδιοκτήτη  
-      "email":"johhdoe@gmail.com", // το email του ιδιοκτήτη
-      "phone":"1234567890",// το τηλέφωνο του ιδιοκτήτη
-      "spots":[] // οι θέσεις του ιδιοκτήτη
-    };
-     
-
+   
     if (!body.id || body.id < 0) {
       //αν το id έχει μη έγκυρη τιμή τότε έχω σφάλμα με κωδικό σφάλματος 400
       const error = new Error("Invalid id: must be a positive integer.");

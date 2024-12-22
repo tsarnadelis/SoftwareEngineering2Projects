@@ -3,7 +3,7 @@
 var utils = require('../utils/writer.js');
 var LicensePlate = require('../service/LicensePlateService');
 
-module.exports.modifyPlate = function modifyPlate (_,res,next,body) {
+module.exports.modifyPlate = function modifyPlate (_,res,__,body) {
   LicensePlate.modifyPlate(body)
     .then(function (response) {
       utils.writeJson(res, response);
@@ -13,7 +13,7 @@ module.exports.modifyPlate = function modifyPlate (_,res,next,body) {
     });
 };
 
-module.exports.registerPlate = function registerPlate (_,res,next,body) {
+module.exports.registerPlate = function registerPlate (_,res,__,body) {
   LicensePlate.registerPlate(body)
     .then(function (response) {
       utils.writeJson(res, response);
