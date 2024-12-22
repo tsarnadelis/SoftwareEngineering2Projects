@@ -103,4 +103,3 @@ test("POST /reservation with missing duration returns 400", async (t) => {
     });
     t.is(body.response.statusCode, 400);
 });
-
