@@ -20,35 +20,36 @@ test.after.always((t) => {
 //amount = το χρηματικό ποσό της πληρωμής
 
 //Από το yaml αρχείο παρατηρώ ότι το amount μπορεί να είναι μόνο ακέραιος , αλλιώς έχω σφάλμα.
-
-//Τεστάρω την συνάρτηση makeReservation για την επιτυχή δημιουργία μιας καινούριας πληρωμής
-test("makePayment function succeeds with valid data", async (t) => {
-    const body = await makePayment({
-      id: 123,
-      user: {
-        id: 456,
-        name: "Jane Doe",
-        licensePlate: {
-          userId: 456,
-          licensePlate: "XYZ-7890",
-        },
-        reservation: [
-          {
-            id: 789,
-            spotId: 321,
-            userId: 456,
-            startTime: "2024-11-23T10:00:00Z",
-            duration: "2024-11-23T12:00:00Z",
-            date: "2024-11-23",
-          },
-        ],
+//Happy path για το payment
+test("POST /payment succesfull", async (t) => {
+  const {body, statusCode} = await  t.context.got.post('payment', {
+    json : {
+    id: 123,
+    user: {
+      id: 456,
+      name: "Jane Doe",
+      licensePlate: {
+        userId: 456,
+        licensePlate: "XYZ-7890",
       },
-      amount: 150,
-    });
-    
-    t.falsy(body); // το body είναι κενό.
-  });
-  
+      reservation: [
+        {
+          id: 789,
+          spotId: 321,
+          userId: 456,
+          startTime: "2024-11-23T10:00:00Z",
+          duration: "2024-11-23T12:00:00Z",
+          date: "2024-11-23",
+        },
+      ],
+    },
+    amount: 150,
+  }
+});
+
+  t.is(statusCode, 200); //checking that the status code is 200
+  t.falsy(body); //confirming that the response body is empty
+});
 
 //Τεστ για μη έγκυρα δεδομένα στο payment
 test("POST /payment with invalid data returns 400", async (t) => {
