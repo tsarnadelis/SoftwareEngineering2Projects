@@ -4,7 +4,7 @@ var utils = require('../utils/writer.js');
 var Reservation = require('../service/ReservationService');
 
 // Function to handle deleting a reservation
-module.exports.deleteReservation = function deleteReservation (req, res, next, id) {
+module.exports.deleteReservation = function deleteReservation (_, res, __, id) {
   Reservation.deleteReservation(id)
     .then(function (response) {
       // Write the response using the utility function
@@ -17,7 +17,7 @@ module.exports.deleteReservation = function deleteReservation (req, res, next, i
 };
 
 //Function to handle making a reservation
-module.exports.makeReservation = function makeReservation (req, res, next, body) {
+module.exports.makeReservation = function makeReservation (_, res,__, body) {
   Reservation.makeReservation(body)
     .then(function (response) {
       // Write the response using the utility function
@@ -30,7 +30,7 @@ module.exports.makeReservation = function makeReservation (req, res, next, body)
 };
 
 //Function to handle modifying a reservation
-module.exports.modifyReservation = function modifyReservation (req, res, next, body, spotId, userId, startTime, duration, date, id) {
+module.exports.modifyReservation = function modifyReservation (_, res, __, body, spotId, userId, startTime, duration, date, id) {
   Reservation.modifyReservation(body, spotId, userId, startTime, duration, date, id)
     .then(function (response) {
       // Write the response using the utility function
