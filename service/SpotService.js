@@ -68,7 +68,7 @@ exports.createSpot = function (body) {
  * returns List
  **/
 exports.getSpots = function () {
-  return new Promise(function (resolve, /**reject*/) { // reject is unused
+  return new Promise(function (resolve, _ /*reject*/) {
     var examples = {};
     examples['application/json'] = [{
       "address": "address",
@@ -169,8 +169,8 @@ exports.modifySpot = function (body, address, type, charger, id) {
  * no response value expected for this operation
  **/
 exports.removeSpot = function (id) {
-  return new Promise(function (resolve, reject) {
-    resolve();  // Διαγράφει τη θέση από το σύστημα
+  return new Promise(function (resolve, _ /*reject*/) {
+    resolve();
   });
 }
 
