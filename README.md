@@ -18,11 +18,15 @@ This repository contains materials related to assignments of the Software Engine
 
 ## Cyclopt platform
 
-Code optimization, bug fixing and statistics extraction for code quality is done using the Cyclopt tool. The rating of this repository can be found below and is automatically updated.
+Code optimization, bug fixing and statistics extraction for code quality is done using the Cyclopt tool. The tool, as well as info on the company can be found at [cyclopt.com](https://www.cyclopt.com/).
+
+<!---
+The rating of this repository can be found below and is automatically updated.
 
 <a href="http://cyclopt.com" >
   <img src="https://server.cyclopt.services/api/badges/6727801f6970cf34939e0f6e" alt="cyclopt rating" height=70px width:auto/>
 </a>
+--->
 
 ## Deliverable 1
 This will be updated when the first assignment is announced. More deliverables will be added when announced.
